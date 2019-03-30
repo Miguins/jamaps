@@ -1,0 +1,16 @@
+
+.pageBody {
+    background-color: blueviolet;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.navBody {
+    background-color: aqua;
+    margin: 10;
+}
+
+.navBody .list {
+    list-style-type: none;
+    padding: 0;
+}
