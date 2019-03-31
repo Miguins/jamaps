@@ -47,6 +47,13 @@ module Api
                 end
             end
 
+            # def validar
+            #     login = Login.find(params[:id])
+            #     user.username == params[:username]
+            #     user.senha == params[:senha]
+            #     render json: {status: 'SUCCESS', message: '200', data: login}, status: :ok
+            # end
+
             private
             def login_params
                 params.permit(:username, :senha)
