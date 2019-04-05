@@ -1,39 +1,81 @@
 import React, { Component } from 'react'
 import './index.css'
 import Image from '../../images/JamapsLOGO-01.png'
+import Axios from 'axios'
+import auth from '../../config/auth/index'
 
 export default class Login extends Component {
+
+    _login = async (e) => {
+        e.preventDefault()
+
+        try {
+            // const response = await Axios.get('http://localhost:8080/api/logins', {
+            //     email: this.refs.user.value,
+            //     password: this.refs.senha.value
+            // })
+
+            const response = await Axios.post('http://localhost:8080/auth/login', {
+                username: this.refs.user.value,
+                password: this.refs.senha.value
+            })
+
+            // console.log(response.data.code)
+
+            console.log(response)
+
+            if (response.status === 200) {
+                console.log(this)
+                auth.setToken(response.data.access_token)
+                auth.login(() => {
+
+                    this.props.history.push("/home")
+                })
+
+            }
+
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
+
+    _register = (e) => {
+        this.props.history.push("/register")
+    }
 
     render() {
 
         return (
-            <body>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-11 col-md-11 col-lg-11 mx-auto">
-                            <div class="card card-signin my-5">
-                                <div class="card-body row align-items-center">
+            <div>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-sm-11 col-md-11 col-lg-11 mx-auto">
+                            <div className="card card-signin my-5">
+                                <div className="card-body row align-items-center">
 
                                     <div className="div-logo-jamaps col-sm">
-                                        <img src={Image} class="img-fluid" />
+                                        <img src={Image} alt="" className="img-fluid" />
                                     </div>
 
-                                    <form class="form-signin col-sm">
-                                        <div class="form-label-group">
-                                            <input type="email" id="inputEmail" class="form-control" placeholder="Email" required autofocus />
-                                            <label for="inputEmail">Email</label>
+                                    <form className="form-signin col-sm">
+                                        <div className="form-label-group">
+                                            <input type="text" ref="user" id="inputEmail" className="form-control" placeholder="Username" required autoFocus />
+                                            <label htmlFor="inputEmail">Username</label>
                                         </div>
 
-                                        <div class="form-label-group">
-                                            <input type="password" id="inputPassword" class="form-control" placeholder="Senha" required />
-                                            <label for="inputPassword">Senha</label>
+                                        <div className="form-label-group">
+                                            <input type="password" ref="senha" id="inputPassword" className="form-control" placeholder="Senha" required />
+                                            <label htmlFor="inputPassword">Senha</label>
                                         </div>
 
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="customCheck1" />
-                                            <label class="custom-control-label" for="customCheck1">Lembrar senha</label>
+                                        <div className="custom-control custom-checkbox mb-3">
+                                            <input type="checkbox" className="custom-control-input" id="customCheck1" />
+                                            <label className="custom-control-label" htmlFor="customCheck1">Lembrar senha</label>
                                         </div>
-                                        <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Entrar</button>
+                                        <button className="btn btn-lg btn-primary btn-block text-uppercase" type="submit" onClick={(e) => this._login(e)}>Entrar</button>
+
+                                        <button type="button" className="btn btn-link btn-cadastro text-uppercase" onClick={(e) => this._register(e)}>Não possui cadastro? clique aqui</button>
 
                                     </form>
                                 </div>
@@ -41,7 +83,7 @@ export default class Login extends Component {
                         </div>
                     </div>
                 </div>
-            </body>
+            </div>
         )
 
     }

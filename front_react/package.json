@@ -1,8 +1,10 @@
 {
   "name": "jamaps_interface",
+  "proxy": "http://localhost:8080",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.7",

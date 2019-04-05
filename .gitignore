@@ -1,0 +1,5 @@
+./back_rails/Gemfile.lock
+
+./back_rails/config/database.yml
+
+./back_rails/db/schema.rb

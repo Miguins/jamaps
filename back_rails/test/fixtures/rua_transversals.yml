@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  nomeRuaTransversal: MyString
+  idRuaTransversal: MyString
+  pontosDeEncontro: MyString
+  velocidadeDeFluxoAtual: 
+  velocidadeEmFluxoLivre: 
+  nivelDeTrafego: 
+
+two:
+  nomeRuaTransversal: MyString
+  idRuaTransversal: MyString
+  pontosDeEncontro: MyString
+  velocidadeDeFluxoAtual: 
+  velocidadeEmFluxoLivre: 
+  nivelDeTrafego: 

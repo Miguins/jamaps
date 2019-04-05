@@ -1,0 +1,2 @@
+class RuaTransversal < ApplicationRecord
+end

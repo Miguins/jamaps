@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './config/index.css';
-import Routes from './components/Login/index';
+import Routes from './config/routes/routes';
 import * as serviceWorker from './config/serviceWorker';
 import 'bootstrap/dist/css/bootstrap.css';
 

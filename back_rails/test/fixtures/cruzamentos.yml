@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  nomeRuaPrincipal: MyString
+  idRua: MyString
+  tempoDaPrevisao: MyString
+
+two:
+  nomeRuaPrincipal: MyString
+  idRua: MyString
+  tempoDaPrevisao: MyString

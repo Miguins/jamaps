@@ -1,67 +1,45 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom"
+import { PrivateRoute } from '../../components/PrivateRoute/index'
+
 import Home from '../../components/Home/App'
 import Graficos from '../../components/Graficos/App'
+import Login from '../../components/Login/index'
+import Register from '../../components/Register/index'
+import auth from '../auth/index'
 
 import './routes.css'
 
-const routes = [
-    {
-        path: "/",
-        exact: true,
-        component: Home
-    },
-    {
-        path: "/graficos",
-        component: Graficos
-    }
-];
+function _logoff(e) {
+    auth.logout(() => {
+        this.props.history.push("/")
+    })
+}
 
-function Sidebar() {
+function SidebarContent() {
     return (
         <Router>
-            <div className="pageBody">
-                {/* Renderiza a SideBar */}
-                <div
-                    className="navBody">
+            <div>
+                <Link to="/home" >Home</Link>
+                <Link to="/graficos">Graficos</Link>
 
-                    <ul className="list">
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/1">1</Link>
-                        </li>
-                        <li>
-                            <Link to="/graficos">Graficos</Link>
-                        </li>
-                    </ul>
-
-                    {routes.map((route, index) => (
-                        <Route
-                            key={index}
-                            path={route.path}
-                            exact={route.exact}
-                        />
-                    ))}
-                </div>
-
-                {/* Renderiza os componentes */}
-                <div style={{ flex: 1, padding: "10px" }}>
-                    {routes.map((route, index) => (
-                        <Route
-                            key={index}
-                            path={route.path}
-                            exact={route.exact}
-                            component={route.component}
-                        />
-                    ))}
-                </div>
+                <Link to="/" onClick={(e) => _logoff(e)} >Logoff</Link>
             </div>
+            <PrivateRoute path="/home" component={Home} />
+            <PrivateRoute path="/graficos" component={Graficos} />
         </Router>
-    );
+    )
+}
+
+function Main() {
+    return (
+        <Router>
+            <Route exact path="/" component={Login} />
+            <Route exact path="/register" component={Register} />
+            <PrivateRoute path="/home" component={SidebarContent} />
+        </Router>
+    )
 }
 
 
-
-export default Sidebar;
+export default Main
