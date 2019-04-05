@@ -1,5 +1,2 @@
-./back_rails/Gemfile.lock
+.vscode
 
-./back_rails/config/database.yml
-
-./back_rails/db/schema.rb
