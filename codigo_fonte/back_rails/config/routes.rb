@@ -10,5 +10,7 @@ Rails.application.routes.draw do
   post 'auth/register', to: 'users#register'
   post 'auth/login', to: 'users#login'
   get 'test', to: 'users#test'
+
   get 'gethere', to: 'application#salvar_json'
+  get 'gethere/cruzamentos', to: 'cruzamentos#index'
 end
