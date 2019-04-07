@@ -10,13 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190401020137) do
+ActiveRecord::Schema.define(version: 20190401124224) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-# Could not dump table "cruzamentos" because of following StandardError
-#   Unknown type 'time with time zone' for column 'tempoDaPrevisao'
+  create_table "cruzamentos", force: :cascade do |t|
+    t.string "nomeRuaPrincipal"
+    t.string "idRua"
+    t.string "tempoDaPrevisao"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "logins", force: :cascade do |t|
     t.string "username"
@@ -25,12 +30,17 @@ ActiveRecord::Schema.define(version: 20190401020137) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "ruasTransversais", id: false, force: :cascade do |t|
-    t.string "fluxoAtual", null: false, array: true
-    t.string "nomeRuaTransversal", limit: 255
-    t.string "pontosDeEncontro", array: true
-    t.integer "idCruzamento"
-    t.index ["idCruzamento"], name: "fki_idCruzamento"
+  create_table "rua_transversals", force: :cascade do |t|
+    t.string "nomeRuaTransversal"
+    t.string "idRuaTransversal"
+    t.string "pontosDeEncontro", default: [], array: true
+    t.integer "velocidadeDeFluxoAtual"
+    t.integer "velocidadeEmFluxoLivre"
+    t.integer "nivelDeTrafego"
+    t.bigint "cruzamento_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cruzamento_id"], name: "index_rua_transversals_on_cruzamento_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -40,10 +50,4 @@ ActiveRecord::Schema.define(version: 20190401020137) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "usuarios", id: :integer, default: nil, force: :cascade do |t|
-    t.string "user", limit: 10
-    t.string "senha", limit: 30
-  end
-
-  add_foreign_key "ruasTransversais", "cruzamentos", column: "idCruzamento", name: "idCruzamento"
 end
