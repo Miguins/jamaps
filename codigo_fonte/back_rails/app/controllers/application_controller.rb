@@ -1,3 +1,5 @@
+require 'rest-client'
+
 class ApplicationController < ActionController::API
   before_action :authenticate_request
   attr_reader :current_user
@@ -17,7 +19,8 @@ class ApplicationController < ActionController::API
 
   public
   def salvar_json
-    parsed_json = ActiveSupport::JSON.decode(request.body.read)
+    response = RestClient::Request.execute(method: :get, url: 'https://servicehere.herokuapp.com/?key=jamalgay24', timeout: 10)
+	  parsed_json = ActiveSupport::JSON.decode(response.body)
 
     for rua in parsed_json["dados"]["ruas"]["cruzamentos"]
       site = Cruzamento::new()
