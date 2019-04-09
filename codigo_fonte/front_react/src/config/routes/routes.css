@@ -1,16 +1,23 @@
 
-.pageBody {
-    background-color: blueviolet;
-    display: flex;
-    flex-wrap: wrap;
+.body-home {
+    padding: 7px;
 }
 
-.navBody {
-    background-color: aqua;
-    margin: 10;
+.no-padding{
+    padding: 0 !important
 }
 
-.navBody .list {
-    list-style-type: none;
-    padding: 0;
+.top-bar {
+    padding: 0.5em;
+    font-size: 24px;
+    
+}
+
+.text-titulo {
+    margin: 10px;
+    text-align: center
+}
+
+.page-content {
+    padding: 10px;
 }

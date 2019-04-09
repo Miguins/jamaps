@@ -4,7 +4,7 @@ import './config/index.css';
 import Routes from './config/routes/routes';
 import * as serviceWorker from './config/serviceWorker';
 import 'bootstrap/dist/css/bootstrap.css';
-
+import './semanticui/semantic.min.css'
 ReactDOM.render(<Routes />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

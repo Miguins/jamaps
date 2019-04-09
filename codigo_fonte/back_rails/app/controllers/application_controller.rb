@@ -23,12 +23,14 @@ class ApplicationController < ActionController::API
 	  parsed_json = ActiveSupport::JSON.decode(response.body)
 
     for rua in parsed_json["dados"]["ruas"]["cruzamentos"]
-      site = Cruzamento::new()
-      site.nomeRuaPrincipal = rua["nomeRuaPrincipal"]
-      site.idRua = rua["id"]
-      site.tempoDaPrevisao = rua["tempoDaPrevisao"]
+      # site = Cruzamento::new()
+      # site.nomeRuaPrincipal = rua["nomeRuaPrincipal"]
+      # site.idRua = rua["id"]
+      # site.tempoDaPrevisao = rua["tempoDaPrevisao"]
       
-      site.save
+      site = Cruzamento.where({
+        :idRua => rua["id"]
+      }).first_or_create(nomeRuaPrincipal: rua["nomeRuaPrincipal"], tempoDaPrevisao: rua["tempoDaPrevisao"])
 
       for transversal in rua["ruasTransversais"]
         t = RuaTransversal::new()
@@ -37,7 +39,7 @@ class ApplicationController < ActionController::API
         t.velocidadeDeFluxoAtual = transversal["fluxoAtual"][0]["velocidadeDeFluxoAtual"]
         t.velocidadeEmFluxoLivre = transversal["fluxoAtual"][0]["velocidadeEmFluxoLivre"]
         t.nivelDeTrafego = transversal["fluxoAtual"][0]["nivelDeTrafego"]
-        t.cruzamento_id = site.id
+        t.cruzamento_id = site.idRua
         
         t.save
       end

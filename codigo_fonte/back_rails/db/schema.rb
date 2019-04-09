@@ -15,9 +15,8 @@ ActiveRecord::Schema.define(version: 20190401124224) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "cruzamentos", force: :cascade do |t|
+  create_table "cruzamentos", primary_key: "idRua", id: :string, force: :cascade do |t|
     t.string "nomeRuaPrincipal"
-    t.string "idRua"
     t.string "tempoDaPrevisao"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
