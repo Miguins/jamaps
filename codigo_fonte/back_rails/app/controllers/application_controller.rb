@@ -39,7 +39,7 @@ class ApplicationController < ActionController::API
         t.velocidadeDeFluxoAtual = transversal["fluxoAtual"][0]["velocidadeDeFluxoAtual"]
         t.velocidadeEmFluxoLivre = transversal["fluxoAtual"][0]["velocidadeEmFluxoLivre"]
         t.nivelDeTrafego = transversal["fluxoAtual"][0]["nivelDeTrafego"]
-        t.cruzamento_id = site.idRua
+        t.cruzamentoId = site.idRua
         
         t.save
       end

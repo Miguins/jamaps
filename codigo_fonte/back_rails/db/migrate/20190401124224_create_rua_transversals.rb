@@ -7,7 +7,7 @@ class CreateRuaTransversals < ActiveRecord::Migration[5.1]
       t.integer :velocidadeDeFluxoAtual
       t.integer :velocidadeEmFluxoLivre
       t.integer :nivelDeTrafego
-      t.references :cruzamento, index: true
+      t.string :cruzamentoId
 
       t.timestamps
     end

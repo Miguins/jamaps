@@ -36,10 +36,9 @@ ActiveRecord::Schema.define(version: 20190401124224) do
     t.integer "velocidadeDeFluxoAtual"
     t.integer "velocidadeEmFluxoLivre"
     t.integer "nivelDeTrafego"
-    t.bigint "cruzamento_id"
+    t.string "cruzamentoId"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cruzamento_id"], name: "index_rua_transversals_on_cruzamento_id"
   end
 
   create_table "users", force: :cascade do |t|

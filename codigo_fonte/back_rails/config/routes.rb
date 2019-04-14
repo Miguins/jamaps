@@ -13,4 +13,6 @@ Rails.application.routes.draw do
 
   get 'gethere', to: 'application#salvar_json'
   get 'gethere/cruzamentos', to: 'cruzamentos#index'
+
+  get 'gethere/cruzamento/:idRua', to: 'cruzamentos#show'
 end
