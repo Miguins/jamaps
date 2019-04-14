@@ -21,3 +21,9 @@
 .page-content {
     padding: 10px;
 }
+
+.btn-stats {
+    position: absolute;
+    right: 0;
+    margin-right: 12px;
+}

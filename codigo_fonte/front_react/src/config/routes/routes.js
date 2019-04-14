@@ -89,42 +89,28 @@ class Main extends Component {
 
                     </Sidebar>
 
-
                     <Sidebar.Pusher>
                         <Segment basic className="no-padding">
                             <div className="body-home" style={{ flexDirection: "column" }}>
                                 <div className="top-bar" >
                                     <button style={{ height: 40, width: 60 }} className="btn btn-light" onClick={(e) => this.hoverOn()}><MdMenu /></button>
                                     <text className="text-titulo">Home</text>
-                                    <button style={{ height: 40, width: 60 }} className="btn btn-light" onClick={(e) => this.hoverRight()}><MdMenu /></button>
-
                                 </div>
                                 {/* <div style={{ backgroundColor: '#000', width: '100%', height: 1 }}></div> */}
                             </div>
 
-                            <Sidebar
-                                as={Menu}
-                                animation='push'
-                                icon='labeled'
-                                inverted
-                                direction='right'
-                                // onHide={this.handleSidebarHide}
-                                vertical
-                                visible={this.state.visibleRight}
-                                width='thin'>
-                            </Sidebar>
-                            <Sidebar.Pusher>
-                                <div style={{ flexDirection: 'row' }}>
-                                    <div style={{ background: '#ddd' }} className="page-content">
-                                        <PrivateRoute path="/home" component={Home} />
-                                        <PrivateRoute path="/graficos" component={Graficos} />
-                                    </div>
+                            <div style={{ flexDirection: 'row' }}>
+                                <div style={{ background: '#ddd' }} className="page-content">
+                                    <PrivateRoute path="/home" component={Home} />
+                                    <PrivateRoute path="/graficos" component={Graficos} />
                                 </div>
-                            </Sidebar.Pusher>
+                            </div>
 
-                            <div style={{ height: '100%', width: 12, background: '#000' }}></div>
                         </Segment>
                     </Sidebar.Pusher>
+
+
+
                 </Sidebar.Pushable>
             </Router >
         )
@@ -136,6 +122,7 @@ class Main extends Component {
                 <Route exact path="/" component={Login} />
                 <Route exact path="/register" component={Register} />
                 <PrivateRoute path="/home" component={this.SidebarContent} />
+                <PrivateRoute path="/graficos" component={this.SidebarContent} />
             </Router>
         )
     }

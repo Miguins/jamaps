@@ -9,12 +9,14 @@ export default class Login extends Component {
     _login = async (e) => {
         e.preventDefault()
 
+        // console.log('cliquei')
+
         try {
             // const response = await Axios.get('http://localhost:8080/api/logins', {
             //     email: this.refs.user.value,
             //     password: this.refs.senha.value
             // })
-
+            // console.log('Antes do await')
             const response = await Axios.post('http://localhost:3001/auth/login', {
                 username: this.refs.user.value,
                 password: this.refs.senha.value

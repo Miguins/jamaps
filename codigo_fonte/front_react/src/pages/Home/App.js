@@ -2,58 +2,88 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import './App.css'
 import { HereMap } from "@wolfmatrix/react-here-maps";
-
+import auth from '../../config/auth/index'
 
 class App extends Component {
 
   state = {
-    img: ""
+    img: "",
+    ruas: []
   }
 
-  getFlowLayer = async () => {
-    // var url = "https://tiles.traffic.api.here.com/traffic/6.0/tiles/12/1496/2064/256/png32?app_id=oZFjEHU1ylRxolutvlcv&app_code=FlOstO_gPjTh-B4XrRiwyg"
+  componentDidMount() {
 
-    // try {
-    //   const data = axios.get(url, {
-    //     responseType: 'arraybuffer'
-    //   });
+    this.getRuas()
 
-    //   Promise.resolve(data).then((value) => {
-    //     console.log(value)
-    //     var test = new Buffer(value.data, 'binary').toString('base64')
-    //     console.log(test)
-    //     this.setState({
-    //       img: test
-    //     })
-    //   })
+  }
 
-    // const newResp = JSON.parse(data)
-    // console.log(newResp)
-    // this.setState({
-    //   img: data
-    // }
-    // } catch (e) {
-    //   console.log(e)
-    // }
+  getRuas = async () => {
 
+
+    try {
+      const data = await axios.get("http://localhost:3001/gethere/cruzamentos", {
+        headers: {
+          Authorization: "Bearer " + auth.isAuth()
+        }
+      });
+
+      this.setState({
+        ruas: data.data.data
+      })
+
+      // console.log(data.data.data);
+
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  renderItems = () => {
+    if (this.state.ruas.length === 0) {
+
+    } else {
+
+      return this.state.ruas.map((value, index) => {
+        if (index < 10) {
+          console.log('menor q 10')
+          return (
+            <p class="list-group-item list-group-item-action">{value.nomeRuaPrincipal}</p>
+          )
+        }
+      })
+
+    }
   }
 
   render() {
+
     return (
-      <div className="App">
+      <div className="App row mx-auto" >
+        <div className="mapStyle">
+          <HereMap
+            initialCenter={{ lat: -1.45716, lng: -48.43464 }}
+            zoom={13}
+            setMinZoomOut={13}
+            liveTrafficEnable={true}
 
-        <HereMap
-          initialCenter={{ lat: -1.45716, lng: -48.43464 }}
-          zoom={13}
-          setMinZoomOut={13}
-          liveTrafficEnable={true}
-          style={{ width: "95%", height: "100vh" }}
-          appConfig={{
-            appId: "oZFjEHU1ylRxolutvlcv",
-            appCode: "FlOstO_gPjTh-B4XrRiwyg"
-          }}
-        />
+            appConfig={{
+              appId: "oZFjEHU1ylRxolutvlcv",
+              appCode: "FlOstO_gPjTh-B4XrRiwyg"
+            }}
+          />
+        </div>
 
+
+        <section className="sectionCard mx-auto">
+          <div className="card cardStyle">
+            <div class="card-title" style={{ flexDirection: "row" }}>
+              <h5> Ruas</h5>
+            </div>
+            <div class="list-group">
+              {this.renderItems()}
+            </div>
+          </div>
+        </section>
       </div>
     );
   }
