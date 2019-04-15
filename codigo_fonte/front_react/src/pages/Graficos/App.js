@@ -26,57 +26,57 @@ const dataTrending = [{
 
 ];
 
-const dataSemana = [
-    {
-        "name": "Domingo",
-        "uv": 4000,
-        "pv": 2400,
-        "amt": 2400
-    },
-    {
-        "name": "Segunda",
-        "uv": 3000,
-        "pv": 1398,
-        "amt": 2210
-    },
-    {
-        "name": "Terça",
-        "uv": 2000,
-        "pv": 9800,
-        "amt": 2290
-    },
-    {
-        "name": "Quarta",
-        "uv": 2780,
-        "pv": 3908,
-        "amt": 2000
-    },
-    {
-        "name": "Quinta",
-        "uv": 1890,
-        "pv": 4800,
-        "amt": 2181
-    },
-    {
-        "name": "Sexta",
-        "uv": 2390,
-        "pv": 3800,
-        "amt": 2500
-    },
-    {
-        "name": "Sabado",
-        "uv": 3490,
-        "pv": 4300,
-        "amt": 2100
-    }
-]
 
 
 class App2 extends Component {
 
     state = {
         img: "",
-        ruas: []
+        ruas: [],
+        dataSemana: [
+            {
+                "name": "Domingo",
+                "uv": 4000,
+                "pv": 2400,
+                "amt": 2400
+            },
+            {
+                "name": "Segunda",
+                "uv": 3000,
+                "pv": 1398,
+                "amt": 2210
+            },
+            {
+                "name": "Terça",
+                "uv": 2000,
+                "pv": 9800,
+                "amt": 2290
+            },
+            {
+                "name": "Quarta",
+                "uv": 2780,
+                "pv": 3908,
+                "amt": 2000
+            },
+            {
+                "name": "Quinta",
+                "uv": 1890,
+                "pv": 4800,
+                "amt": 2181
+            },
+            {
+                "name": "Sexta",
+                "uv": 2390,
+                "pv": 3800,
+                "amt": 2500
+            },
+            {
+                "name": "Sabado",
+                "uv": 3490,
+                "pv": 4300,
+                "amt": 2100
+            }
+        ]
     }
 
     componentDidMount() {
@@ -106,16 +106,65 @@ class App2 extends Component {
         }
     }
 
+    _click = (e) => {
+        e.preventDefault()
+
+        this.setState({
+            dataSemana: [{
+                "name": "Domingo",
+                "uv": 4000,
+                "pv": 2400,
+                "amt": 2400
+            },
+            {
+                "name": "Segunda",
+                "uv": 3000,
+                "pv": 1398,
+                "amt": 2210
+            },
+            {
+                "name": "Terça",
+                "uv": 2000,
+                "pv": 9800,
+                "amt": 2290
+            },
+            {
+                "name": "Quarta",
+                "uv": 2780,
+                "pv": 3908,
+                "amt": 2000
+            },
+            {
+                "name": "Quinta",
+                "uv": 1890,
+                "pv": 4800,
+                "amt": 2181
+            },
+            {
+                "name": "Sexta",
+                "uv": 2390,
+                "pv": 3800,
+                "amt": 2500
+            },
+            {
+                "name": "Sabado",
+                "uv": 3,
+                "pv": 4,
+                "amt": 2
+            }]
+        })
+    }
+
     renderItems = () => {
         if (this.state.ruas.length === 0) {
 
         } else {
-
+            console.log(this.state.ruas)
             return this.state.ruas.map((value, index) => {
                 if (index < 5) {
-                    console.log('menor q 5')
+                    // console.log('menor q 5')
                     return (
-                        <p class="list-group-item list-group-item-action">{value.nomeRuaPrincipal}</p>
+                        <p class="list-group-item list-group-item-action" onClick={(e) => this._click(e)}>{value.nomeRuaPrincipal}</p>
                     )
                 }
             })
@@ -135,7 +184,7 @@ class App2 extends Component {
                 <div className="row">
                     {/* TODO grafico de tendencias */}
 
-                    <AreaChart width={850} height={350} data={dataSemana}
+                    <AreaChart width={850} height={350} data={this.state.dataSemana}
                         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
