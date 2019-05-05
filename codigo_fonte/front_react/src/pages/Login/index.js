@@ -27,7 +27,7 @@ export default class Login extends Component {
             console.log(response)
 
             if (response.status === 200) {
-                console.log(this)
+                // console.log(this)
                 auth.setToken(response.data.access_token)
                 auth.login(() => {
 
@@ -60,8 +60,8 @@ export default class Login extends Component {
                                         <img src={Image} alt="" className="img-fluid" />
                                     </div>
 
-                                    <form className="form-signin col-sm">
-                                        <div className="form-label-group">
+                                    <form className="form-signin col-sm validation">
+                                        <div className="form-label-group" >
                                             <input type="text" ref="user" id="inputEmail" className="form-control" placeholder="Username" required autoFocus />
                                             <label htmlFor="inputEmail">Username</label>
                                         </div>

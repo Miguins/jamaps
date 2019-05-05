@@ -6,6 +6,7 @@ import Home from '../../pages/Home/App'
 import Graficos from '../../pages/Graficos/App'
 import Login from '../../pages/Login/index'
 import Register from '../../pages/Register/index'
+import Totem from '../../pages/Totem/index'
 import auth from '../auth/index'
 
 import { MdMenu, MdHome, MdGraphicEq } from 'react-icons/md'
@@ -59,8 +60,22 @@ class Main extends Component {
         }
     }
 
-    SidebarContent = () => {
+    upperCasePrimeiraLetra(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 
+    NavTitle = ({ match }) => {
+        // console.log(match)
+        return (
+            <div className="top-bar" >
+                <button style={{ height: 40, width: 60 }} className="btn btn-light btn-menu" onClick={(e) => this.hoverOn()}><MdMenu /></button>
+                <p className="text-titulo">{this.upperCasePrimeiraLetra(match.params.id)}</p>
+            </div>
+        )
+    }
+
+    SidebarContent = () => {
+        // console.log(match)
         return (
             <Router>
                 <Sidebar.Pushable as={Segment} >
@@ -71,20 +86,20 @@ class Main extends Component {
                         icon='labeled'
                         inverted
                         // onHide={this.handleSidebarHide}
+                        className="sidebar-style"
                         vertical
                         visible={this.state.visible}
                         width='thin'>
-
 
                         <div className="">
                             <img src={Image} alt="" className="img-fluid" />
                         </div>
                         <h2 className="text-white" >JAMAPS</h2>
 
-                        <Link to="/home" className="text-white" ><Menu.Item as='a'><MdHome />Home</Menu.Item></Link>
-                        <Link to="/graficos"><Menu.Item as='a'><MdGraphicEq />Graficos</Menu.Item></Link>
-
-                        <Link to="/" onClick={(e) => this._logoff(e)} ><Menu.Item as='a'><GoArrowDown />Logoff</Menu.Item> </Link>
+                        <Link to={{ pathname: "/home" }} className="text-white" ><Menu.Item><MdHome />Home</Menu.Item></Link>
+                        <Link to="/graficos"><Menu.Item ><MdGraphicEq />Graficos</Menu.Item></Link>
+                        <Link to="/totem"><Menu.Item ><MdGraphicEq />Totens</Menu.Item></Link>
+                        <Link to="/" onClick={(e) => this._logoff(e)} ><Menu.Item><GoArrowDown />Logoff</Menu.Item> </Link>
 
 
                     </Sidebar>
@@ -92,10 +107,7 @@ class Main extends Component {
                     <Sidebar.Pusher>
                         <Segment basic className="no-padding">
                             <div className="body-home" style={{ flexDirection: "column" }}>
-                                <div className="top-bar" >
-                                    <button style={{ height: 40, width: 60 }} className="btn btn-light" onClick={(e) => this.hoverOn()}><MdMenu /></button>
-                                    <text className="text-titulo">Home</text>
-                                </div>
+                                <Route path="/:id" component={this.NavTitle} />
                                 {/* <div style={{ backgroundColor: '#000', width: '100%', height: 1 }}></div> */}
                             </div>
 
@@ -103,8 +115,14 @@ class Main extends Component {
                                 <div style={{ background: '#ddd' }} className="page-content">
                                     <PrivateRoute path="/home" component={Home} />
                                     <PrivateRoute path="/graficos" component={Graficos} />
+                                    <PrivateRoute path="/totem" component={Totem} />
                                 </div>
                             </div>
+
+                            <div className="footer-content">
+                                <h6>&#9400; Não pode desfuder o que já está fudido - Jamal, 2018</h6>
+                            </div>
+
 
                         </Segment>
                     </Sidebar.Pusher>
@@ -123,6 +141,7 @@ class Main extends Component {
                 <Route exact path="/register" component={Register} />
                 <PrivateRoute path="/home" component={this.SidebarContent} />
                 <PrivateRoute path="/graficos" component={this.SidebarContent} />
+                <PrivateRoute path="/totem" component={this.SidebarContent} />
             </Router>
         )
     }

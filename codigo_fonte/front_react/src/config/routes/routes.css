@@ -1,6 +1,7 @@
 
 .body-home {
     padding: 7px;
+    background: #15161C;
 }
 
 .no-padding{
@@ -10,16 +11,40 @@
 .top-bar {
     padding: 0.5em;
     font-size: 24px;
-    
+    color: #E9E9EA;
 }
 
 .text-titulo {
-    margin: 10px;
-    text-align: center
+    margin: 10px !important;
+    text-align: center;
+    padding: 0px !important;
+    margin-block-end: 0 !important;
+    margin-block-start: 0 !important;
+    display: inline;
 }
 
 .page-content {
     padding: 10px;
+    background: #282A36 !important;
+}
+
+.sidebar-style {
+    background: #15161C !important;
+}
+
+.footer-content {
+    background: #15161C;
+    color: #E9E9EA;
+    border-top: #E9E9EA;
+    width: 100%;
+    padding: 10px;
+
+}
+
+.btn-menu {
+    background-color: #15161C !important;
+    color: #E9E9EA !important;
+    border-color: #E9E9EA !important;
 }
 
 .btn-stats {

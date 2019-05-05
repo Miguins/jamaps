@@ -8,6 +8,7 @@
     "apexcharts": "^3.6.7",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
+    "google-map-react": "^1.1.4",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.7",
     "react": "^16.8.4",
