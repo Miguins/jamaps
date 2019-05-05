@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  nome: MyString
+  ruaPrincipal: MyString
+  ruaTransversal: MyString
+  latitude: MyString
+  longitude: MyString
+
+two:
+  nome: MyString
+  ruaPrincipal: MyString
+  ruaTransversal: MyString
+  latitude: MyString
+  longitude: MyString

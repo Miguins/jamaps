@@ -1,0 +1,2 @@
+class Totem < ApplicationRecord
+end
