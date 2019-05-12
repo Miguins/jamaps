@@ -6,6 +6,7 @@ class CreateTotems < ActiveRecord::Migration[5.1]
       t.string :ruaTransversal
       t.string :latitude
       t.string :longitude
+      t.string :idRuaTransversal
 
       t.timestamps
     end

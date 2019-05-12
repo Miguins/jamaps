@@ -19,7 +19,6 @@ class ApplicationController < ActionController::API
 
   public
   def salvar_json
-      900.times do
         response = RestClient::Request.execute(method: :get, url: 'https://servicehere.herokuapp.com/?key=jamalgay24', timeout: 10)
         parsed_json = ActiveSupport::JSON.decode(response.body)
 
@@ -45,7 +44,5 @@ class ApplicationController < ActionController::API
             t.save
           end
         end
-      sleep(1.hours)
-    end # times fim
-  end
+  end # end salvar_json
 end

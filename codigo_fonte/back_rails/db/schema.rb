@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20190505203655) do
     t.string "ruaTransversal"
     t.string "latitude"
     t.string "longitude"
+    t.string "idRuaTransversal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
