@@ -1,23 +1,17 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import './App.css'
-// import { HereMap, Marker } from "@wolfmatrix/react-here-maps";
-
-import { GoLocation, GoArrowLeft, GoSearch } from 'react-icons/go'
-import GoogleMapReact from 'google-map-react';
+import AdHereMap from '../../here-map-ad-here/index'
+import Marker from '../../here-map-ad-here/marker/index'
+import { GoArrowLeft, GoSearch } from 'react-icons/go'
+import Pagination from 'react-js-pagination'
 import auth from '../../config/auth/index'
-
-
-const MapMarker = ({ text }) => {
-  return (
-    <GoLocation />
-  )
-}
-
+import { withRouter } from 'react-router-dom'
 
 class App extends Component {
 
   state = {
+    activePage: 1,
     busca: false,
     img: "",
     ruas: [],
@@ -27,20 +21,20 @@ class App extends Component {
       lat: -1.4476205,
       lng: -48.4736209,
     },
-    zoom: 13,
+    zoom: 14,
     markerCenter: null,
     ruaAtual: null,
-    paginaAtual: 0,
-    ultimoPagina: 9,
-    primeiroPagina: 0,
-    paginaTotal: 0
+    paginaAtual: 1,
+    pageList: []
   }
 
   componentDidMount() {
-
     this.getRuas()
+  }
 
-
+  handlePageChange = (pageNumber) => {
+    // console.log(`active page is ${pageNumber}`);
+    this.setState({ paginaAtual: pageNumber });
   }
 
   clickMarker = async (e, index) => {
@@ -49,7 +43,9 @@ class App extends Component {
     // console.log(this.state.ruas[index].idRua)
     if (!this.state.details) {
       try {
-        const data = await axios.get("http://localhost:3001/gethere/cruzamento/" + this.state.ruas[index].idRua, {
+        // var urlLocal = "http://localhost:3001/"
+        var urlHeroku = "https://back-jamapas2.herokuapp.com/"
+        const data = await axios.get(urlHeroku + "gethere/cruzamento/" + this.state.ruas[index].idRua, {
           headers: {
             Authorization: "Bearer " + auth.isAuth()
           }
@@ -60,7 +56,7 @@ class App extends Component {
           details: true,
           busca: false,
           ruaAtual: this.state.ruas[index].nomeRuaPrincipal,
-          paginaAtual: 0,
+          paginaAtual: 1,
           ultimoPagina: 9
         })
 
@@ -106,31 +102,37 @@ class App extends Component {
   getRuas = async () => {
 
     try {
-      const data = await axios.get("http://localhost:3001/gethere/cruzamentos", {
+      // var urlLocal = "http://localhost:3001/"
+      var urlHeroku = "https://back-jamapas2.herokuapp.com/"
+      const data = await axios.get(urlHeroku + "gethere/cruzamentos", {
         headers: {
           Authorization: "Bearer " + auth.isAuth()
         }
       });
 
-      var pageNumbers
-      for (let i = 1; i <= Math.ceil(data.data.data.length / 9); i++) {
-        pageNumbers++;
+      var pageList = []
+
+
+      for (var i = 0; i < data.data.data.length / 8; i++) {
+        var itens = []
+        for (var j = i * 8; j < (i * 8) + 8; j++) {
+          if (data.data.data[j] !== undefined) {
+
+            itens[j] = data.data.data[j]
+          }
+        }
+        pageList[i] = itens
       }
 
 
       this.setState({
-        ruas: data.data.data,
-        lista: data.data.data,
+        ruas: pageList,
+        lista: pageList,
         details: false,
         busca: false,
-        paginaTotal: pageNumbers,
-        ultimoPagina: 9
       })
 
-
-
-
-      // console.log(data.data.data);
+      // console.log(data);
 
     } catch (e) {
       console.log(e)
@@ -139,56 +141,56 @@ class App extends Component {
   }
 
   renderItems = () => {
-    if (this.state.ruas.length === 0) {
-      return null
-    } else {
-      if (!this.state.details) {
-        if (this.state.busca) {
-          return this.state.lista.map((value, index) => {
-            if (index >= 9 * this.state.paginaAtual && index < this.state.ultimoPagina) {
-              // console.log(value)
-              return (
-                // <p key={index} className="list-group-item list-group-item-action" onClick={(e) => this.clickMarker(e, index)}>{value.nomeRuaPrincipal}</p>
-                <tr onClick={(e) => this.clickMarker(e, index)}>
-                  <td key={index}>{value.nomeRuaPrincipal}</td>
-                  <td key={index}>9.0</td>
-                </tr>
-              )
-            }
-            return null
-          })
-        }
-        return this.state.ruas.map((value, index) => {
-          if (index >= 9 * this.state.paginaAtual && index < this.state.ultimoPagina) {
-            // console.log(value)
-            return (
-              // <p key={index} className="list-group-item list-group-item-action" onClick={(e) => this.clickMarker(e, index)}>{value.nomeRuaPrincipal}</p>
-              <tr key={index} onClick={(e) => this.clickMarker(e, index)}>
-                <td >{value.nomeRuaPrincipal}</td>
-                <td >9.0</td>
-              </tr>
 
-            )
-          }
-          return null
-        })
-      } else {
-        // console.log(this.state.lista)
-        return this.state.lista.map((value, index) => {
-          if (index >= 9 * this.state.paginaAtual && index < this.state.ultimoPagina) {
-            // console.log('to aqui')
-            return (
-              // <p key={index} className="list-group-item list-group-item-action" onClick={(e) => this.clickMarker(e, index)}>{value.nomeRuaTransversal}</p>
-              <tr key={index} onClick={(e) => this.clickMarker(e, index)}>
-                <td >{value.nomeRuaTransversal}</td>
-                <td >9.0</td>
-              </tr>
-            )
-          }
-          return null
-        })
-      }
+    if (this.state.lista.length === 0) {
+      return null
     }
+    // console.log(this.state.lista)
+    return this.state.lista[this.state.paginaAtual - 1].map((value, index) => {
+
+      // arrayOfStrings 0 = ano e 1 = mes 
+      var arrayOfStrings = value.created_at.split("-");
+      // arrayOfStrings2 0 = dia
+      var arrayOfStrings2 = arrayOfStrings[2].split("T");
+      // arrayOfStrings3 0 = hora e 1 = minuto
+      var arrayOfStrings3 = arrayOfStrings2[1].split(":");
+      console.log(" Hora: " + arrayOfStrings3[0] + ":" + arrayOfStrings3[1] + "Dia: " + arrayOfStrings2[0] + " Mes: " + arrayOfStrings[1] + " Ano: " + arrayOfStrings[0])
+
+      return (
+        // <p key={index} className="list-group-item list-group-item-action" onClick={(e) => this.clickMarker(e, index)}>{value.nomeRuaTransversal}</p>
+        <div key={index}
+          style={{
+            fontFamily: "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif",
+            display: 'flex',
+            position: 'relative',
+            flexDirection: 'row',
+            color: 'white',
+            padding: 10,
+            boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+            width: "100%",
+            margin: 5,
+            cursor: "pointer",
+            background: "rgba(39, 46, 69, 0.6)",
+            // color: "#fff",
+            // border: "1px solid #6b37af",
+            borderRadius: 6
+          }}>
+
+
+
+          <h4 style={{ marginBottom: 0, color: 'white' }}>{value.nomeRuaPrincipal}</h4>
+
+
+          {/* <div style={{ display: 'flex', justifyContent: 'right', marginLeft: 15 }}>
+                        <h4>{(rua.value / cont).toFixed(1)}</h4>
+                    </div> */}
+
+        </div>
+      )
+
+    })
+
+
   }
 
   _onChange = ({ center, zoom }) => {
@@ -204,12 +206,12 @@ class App extends Component {
       // console.log("foi")
       return (
         <div>
-          <button style={{ height: 40, width: 50 }} className="btn btn-light" onClick={() => this.setState({ ruaAtual: null, details: false })} ><GoArrowLeft /></button>
+          <button style={{ height: 40, width: 50 }} className="btn btn-light" onClick={() => this.setState({ ruaAtual: null, details: false, markerCenter: null })} ><GoArrowLeft /></button>
           <h5 className="text-titulo-clicked">{this.state.ruaAtual}</h5>
         </div>
       )
     } else {
-      return <h5 className="text-titulo">Totens</h5>
+      return <h5 className="text-titulo" style={{ color: "#fff" }}>Totens</h5>
     }
   }
 
@@ -225,7 +227,7 @@ class App extends Component {
       }
       return null
     })
-    console.log(array)
+    // console.log(array)
     this.setState({
       lista: array,
       ruaAtual: "Pesquisa",
@@ -271,39 +273,15 @@ class App extends Component {
         <div className="mapStyle">
           {/* {console.log(this.state.mapProps.lat)} */}
 
-          <GoogleMapReact
-            onChange={this._onChange}
-            bootstrapURLKeys={{ key: "AIzaSyC2FHGrra6HIBgfKGo7-cnsDllhkQdbEUE" }}
-            center={this.state.center}
-            zoom={this.state.zoom}>
-
-            {this.state.markerCenter ? <MapMarker lat={this.state.markerCenter.lat} lng={this.state.markerCenter.lng} /> : null}
-
-          </GoogleMapReact>
-
-          {/* <HereMap
-            initialCenter={{ lat: this.state.center.lat, lng: this.state.center.lng }}
-            zoom={this.state.zoom}
-            setMinZoomOut={13}
-            liveTrafficEnable={true}
-            onChange={this._onChange}
-            key={Math.random()}
-            appConfig={{
-              appId: "oZFjEHU1ylRxolutvlcv",
-              appCode: "FlOstO_gPjTh-B4XrRiwyg"
-            }}
-          > */}
-          {/* <Marker markerProps={[{ lat: -1.4493231, lng: -48.4827796 }]} />
-            <Marker markerProps={[{ lat: -1.4326977, lng: -48.4660724 }]} />
-            <Marker markerProps={[{ lat: -1.4343338, lng: -48.459534 }]} />
-            <Marker markerProps={[{ lat: -1.4448104, lng: -48.4917312 }]} /> */}
-          {/* </HereMap> */}
+          <AdHereMap key={Math.random()} onChange={this._onChange} center={this.state.center} zoom={this.state.zoom} onMapLoaded={() => { }}>
+            {this.state.markerCenter ? <Marker lat={this.state.markerCenter.lat} lng={this.state.markerCenter.lng} /> : null}
+          </AdHereMap>
 
         </div>
 
 
-        <section className="sectionCard">
-          <div className="card card-style">
+        <section className="sectionCard" >
+          <div className="card card-style" style={{ backgroundColor: 'rgb(32, 38, 60, 0.70)' }}>
             <div className="card-title" >
 
               {this.renderRua()}
@@ -315,38 +293,31 @@ class App extends Component {
 
             </div>
             <div className="list-group">
-              <table className="table table-hover">
-                <thead>
+              <div className="table table-hover">
+                {/* <thead>
                   <tr>
                     <th scope="col">Rua</th>
                     <th scope="col">Tráfego</th>
                   </tr>
-                </thead>
-                <tbody>
+                </thead> */}
+                {/* <tbody> */}
 
-                  {this.renderItems()}
+                {this.renderItems()}
 
-                </tbody>
-              </table>
+                {/* </tbody> */}
+              </div>
 
-              <nav aria-label="Page navigation example paginas">
-                <ul className="pagination">
-                  <li className="page-item">
-                    <button className="page-link" onClick={(e) => null} aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                      <span className="sr-only">Previous</span>
-                    </button>
-                  </li>
-
-                  {this._pagination()}
-
-                  <li className="page-item">
-                    <button className="page-link" onClick={(e) => this.validarPagina(e)} aria-label="Next">
-                      <span aria-hidden="true">&raquo;</span>
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Pagination
+                  activePage={this.state.paginaAtual}
+                  itemsCountPerPage={8}
+                  totalItemsCount={this.state.lista.length}
+                  pageRangeDisplayed={5}
+                  onChange={this.handlePageChange}
+                  itemClass="page-item"
+                  linkClass="page-link"
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -355,4 +326,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

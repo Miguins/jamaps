@@ -4,20 +4,40 @@
         height: 100%;
         margin-bottom: 5px;
         padding: 10px;
-        background: rgb(21,22,28,0.5);
+        background: rgb(32, 38, 60, 0.70);
         color: #E9E9EA;
-        width: 48%;
+        width: 100%;
     }
     .card-totem-style {
         padding: 10px;
-        width: 48% !important;
-        height: 100%;
-        background: rgb(21,22,28,0.5);
+        width: 100% !important;
+        background: rgb(32, 38, 60, 0.70);
+        /* background: linear-gradient( #212950, #121938);  212950 12 19 38*/
+        /* background: #555679; */
+        /* border: 1px solid #45a29e; */
         border-radius: 4px;
     }
-    .body {
-        width: 100%;
-        height: 90vh;
+    .card-ruas-style {
+        padding: 10px;
+        width: 100% !important;
+        /* background: rgb(49,52,66,0.5); */
+        /* background: #1f2833; */
+        /* background: linear-gradient( #212950, #121938); */
+        background: rgb(32, 38, 60, 0.70);
+        background-repeat: no-repeat;
+        border-radius: 4px;
+        /* border: 1px solid #45a29e; */
+    }
+    .body-ruas {
+        margin: 0 10px !important;
+        width: 40% !important;
+        height: 100vh;
+        display: flex;
+        justify-content: space-evenly;
+    }
+    .body-totem {
+        width: 60% !important;
+        height: 100vh;
         margin: 0 !important;
         display: flex;
         justify-content: space-evenly;
@@ -40,16 +60,33 @@
         background: rgb(21,22,28,0.5);
         border-radius: 4px;
     }
-    .body {
-        width: 100%;
-        height: 100%;
+    .card-ruas-style {
+        padding: 10px;
+        width: 100% !important;
+        /* height: 100%; */
+        background: rgb(21,22,28,0.5);
+        border-radius: 4px;
+    }
+    .body-ruas {
+        margin: 0 10px !important;
+        width: 100% !important;
+        height: 100vh;
+        display: flex;
+        justify-content: space-evenly;
+    }
+    .body-totem {
+        width: 100% !important;
+        height: 100vh;
         margin: 0 !important;
         display: flex;
         justify-content: space-evenly;
     }
 }
 
-
+.lista-vazia {
+    width: 100% !important;
+    justify-content: center;
+}
 
 .totem-map-container {
     margin-top: 5px;
@@ -85,10 +122,11 @@
 }
 
 .btn-alterar {
-    background: #2F3869 !important;
-    border-color: #2F3869 !important;
+    background: #517030 !important;
+    border-color: #517030 !important;
     color: #E9E9EA;
     margin-top: 8px; 
+    font-weight: bold !important
 }
 
 .btn-adicionar {
@@ -99,3 +137,61 @@
     margin-top: 8px;
 }
 
+.btn-back {
+    background: #2F3869 !important;
+    border-color: #2F3869 !important;
+    color: #E9E9EA;
+    margin-left: 5px;
+    margin-top: 24px;
+}
+
+.txt-menu {
+    margin-left: 10px;
+    display: flex;
+    width: 20% !important
+}
+
+.title-container {
+    display: flex !important;
+    justify-content: space-between
+}
+
+.container-editar {
+    display: flex;
+}
+
+.change-cursor {
+    cursor: pointer
+}
+
+.graph-card {
+    width: 70%;
+    padding: 20px;
+    margin: 5px;
+    background: #020203;
+}
+
+.circle-card {
+    width: 30%;
+    padding: 20px;
+    margin: 5px;
+    background: #020203;
+}
+
+.graph-div {
+    display: flex;
+    width: 100%;
+}
+
+.add-buttom {
+    margin: 0 !important;
+    align-content: flex-end;
+    background: #2F3869 !important;
+    border-color: #2F3869 !important;
+    color: #E9E9EA;
+    margin-bottom: 3px !important;
+}
+
+.autocomplete-input {
+    width: 100% !important
+}

@@ -4,6 +4,7 @@ import axios from 'axios'
 import auth from '../../config/auth/index'
 import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Area, Bar, Line, AreaChart } from 'recharts';
 import { FiSearch, FiArrowLeft } from 'react-icons/fi'
+import { withRouter } from 'react-router-dom'
 
 // ------- GRAFICO ---------
 const dataTrending = [{
@@ -123,50 +124,7 @@ class App2 extends Component {
     _click = (e) => {
         e.preventDefault()
 
-        // this.setState({
-        //     dataSemana: [{
-        //         "name": "Domingo",
-        //         "uv": 4000,
-        //         "pv": 2400,
-        //         "amt": 2400
-        //     },
-        //     {
-        //         "name": "Segunda",
-        //         "uv": 3000,
-        //         "pv": 1398,
-        //         "amt": 2210
-        //     },
-        //     {
-        //         "name": "Terça",
-        //         "uv": 2000,
-        //         "pv": 9800,
-        //         "amt": 2290
-        //     },
-        //     {
-        //         "name": "Quarta",
-        //         "uv": 2780,
-        //         "pv": 3908,
-        //         "amt": 2000
-        //     },
-        //     {
-        //         "name": "Quinta",
-        //         "uv": 1890,
-        //         "pv": 4800,
-        //         "amt": 2181
-        //     },
-        //     {
-        //         "name": "Sexta",
-        //         "uv": 2390,
-        //         "pv": 3800,
-        //         "amt": 2500
-        //     },
-        //     {
-        //         "name": "Sabado",
-        //         "uv": 3,
-        //         "pv": 4,
-        //         "amt": 2
-        //     }]
-        // })
+
     }
 
     busca = (e) => {
@@ -249,7 +207,7 @@ class App2 extends Component {
                 <div className="row">
                     {/* TODO grafico de tendencias */}
 
-                    <AreaChart width={(this.state.width * 7.5) / 10} height={350} data={this.state.dataSemana}
+                    <AreaChart width={(this.state.width * 7.0) / 10} height={350} data={this.state.dataSemana}
                         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -271,7 +229,7 @@ class App2 extends Component {
 
                     <section className="sectionCard">
                         <div className="card cardStyle">
-                            <div class="card-title" style={{ flexDirection: "row" }}>
+                            <div className="card-title" style={{ flexDirection: "row" }}>
                                 {this.renderRua()}
                                 <form className="form-inline" style={{ marginTop: 5 }}>
                                     <input className="form-control" ref="search" type="search" placeholder="Search" aria-label="Search" style={{ marginRight: 2 }} />
@@ -306,4 +264,4 @@ class App2 extends Component {
     }
 }
 
-export default App2;
+export default withRouter(App2);

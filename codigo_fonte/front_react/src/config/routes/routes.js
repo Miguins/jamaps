@@ -7,6 +7,8 @@ import Graficos from '../../pages/Graficos/App'
 import Login from '../../pages/Login/index'
 import Register from '../../pages/Register/index'
 import Totem from '../../pages/Totem/index'
+import Detalhes from '../../pages/Totem/Detalhes/index'
+import Editar from '../../pages/Totem/Editar/index'
 import auth from '../auth/index'
 
 import { MdMenu, MdHome, MdGraphicEq } from 'react-icons/md'
@@ -97,7 +99,7 @@ class Main extends Component {
                         <h2 className="text-white" >JAMAPS</h2>
 
                         <Link to={{ pathname: "/home" }} className="text-white" ><Menu.Item><MdHome />Home</Menu.Item></Link>
-                        <Link to="/graficos"><Menu.Item ><MdGraphicEq />Graficos</Menu.Item></Link>
+                        {/* <Link to="/graficos"><Menu.Item ><MdGraphicEq />Graficos</Menu.Item></Link> */}
                         <Link to="/totem"><Menu.Item ><MdGraphicEq />Totens</Menu.Item></Link>
                         <Link to="/" onClick={(e) => this._logoff(e)} ><Menu.Item><GoArrowDown />Logoff</Menu.Item> </Link>
 
@@ -116,11 +118,13 @@ class Main extends Component {
                                     <PrivateRoute path="/home" component={Home} />
                                     <PrivateRoute path="/graficos" component={Graficos} />
                                     <PrivateRoute path="/totem" component={Totem} />
+                                    <PrivateRoute exact path="/detalhes" component={Detalhes} />
+                                    <PrivateRoute exact path="/editar" component={Editar} />
                                 </div>
                             </div>
 
                             <div className="footer-content">
-                                <h6>&#9400; Não pode desfuder o que já está fudido - Jamal, 2018</h6>
+                                <h6>&#9400; JamalCorp, 2019</h6>
                             </div>
 
 
@@ -139,9 +143,11 @@ class Main extends Component {
             <Router>
                 <Route exact path="/" component={Login} />
                 <Route exact path="/register" component={Register} />
+                <PrivateRoute exact path="/detalhes" component={this.SidebarContent} />
+                <PrivateRoute exact path="/editar" component={this.SidebarContent} />
                 <PrivateRoute path="/home" component={this.SidebarContent} />
                 <PrivateRoute path="/graficos" component={this.SidebarContent} />
-                <PrivateRoute path="/totem" component={this.SidebarContent} />
+                <PrivateRoute exact path="/totem" component={this.SidebarContent} />
             </Router>
         )
     }
