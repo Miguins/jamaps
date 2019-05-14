@@ -78,27 +78,27 @@ class Register extends Component {
                     <div className="container" >
                         <div className="row">
                             <div className="col-sm-11 col-md-11 col-lg-11 mx-auto">
-                                <div className="card card-signin my-5 col-sm-7 mx-auto">
+                                <div className="card card-signin my-5 col-sm-7 mx-auto" style={{ background: "rgba(32, 38, 60, 0.7)" }}>
                                     <div className="card-body align-items-center">
 
-                                        <h2 className="text-monospace text-center" style={{ padding: 30, paddingTop: 20 }}>Registrar</h2>
+                                        <h2 className="text-monospace text-center" style={{ padding: 30, paddingTop: 20, color: '#fff' }}>Registrar</h2>
 
                                         <form className="form-signin col-sm" onSubmit={(e) => this._register(e)}>
                                             <div className="form-label-group">
-                                                <input type="text" ref="user" id="validationTooltipUsername" className="form-control" placeholder="Username" required="required" autoFocus />
-                                                <label htmlFor="validationTooltipUsername">Username</label>
+                                                <input style={{ background: "rgba(39, 46, 69, 0.6)", color: "#fff", borderColor: "#fff" }} type="text" ref="user" id="validationTooltipUsername" className="form-control" placeholder="Username" required="required" autoFocus />
+                                                <label style={{ color: "#fff" }} htmlFor="validationTooltipUsername">Username</label>
 
                                             </div>
 
                                             <div className="form-label-group">
-                                                <input type="password" ref="senha" id="inputPassword" className="form-control" placeholder="Senha" required />
-                                                <label htmlFor="inputPassword">Senha</label>
+                                                <input style={{ background: "rgba(39, 46, 69, 0.6)", color: "#fff", borderColor: "#fff" }} type="password" ref="senha" id="inputPassword" className="form-control" placeholder="Senha" required />
+                                                <label style={{ color: "#fff" }} htmlFor="inputPassword">Senha</label>
                                             </div>
 
 
-                                            <button className="btn btn-lg btn-primary btn-block text-uppercase" type="submit" >Registrar</button>
+                                            <button style={{ background: "rgb(19, 136, 8)", borderColor: "rgb(19, 136, 8)" }} className="btn btn-lg btn-primary btn-block text-uppercase" type="submit" >Registrar</button>
 
-                                            <button type="button" className="btn btn-link btn-cadastro text-uppercase" onClick={() => this.props.history.push("/")}>Já tenho conta. Quero entrar</button>
+                                            <button style={{ color: "rgb(19, 136, 8)" }} type="button" className="btn btn-link btn-cadastro text-uppercase" onClick={() => this.props.history.push("/")}>Já tenho conta. Quero entrar</button>
 
                                         </form>
                                     </div>

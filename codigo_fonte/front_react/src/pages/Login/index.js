@@ -99,11 +99,11 @@ class Login extends Component {
         } else {
 
             return (
-                <div className="body-login" style={{ background: "rgb(26,28,49" }}>
+                <div className="body-login" style={{ background: "rgb(26,28,49)" }}>
                     <div className="container">
                         <div className="row">
                             <div className="col-sm-11 col-md-11 col-lg-11 mx-auto">
-                                <div className="card card-signin my-5">
+                                <div className="card card-signin my-5" style={{ background: "rgba(32, 38, 60, 0.7)" }}>
                                     <div className="card-body row align-items-center">
 
                                         <div className="div-logo-jamaps col-sm">
@@ -112,13 +112,13 @@ class Login extends Component {
 
                                         <form className="form-signin col-sm" onSubmit={(e) => this._login(e)}>
                                             <div className="form-label-group" >
-                                                <input type="text" ref="user" id="validationDefaultUsername" className="form-control" placeholder="Username" required="required" autoFocus />
-                                                <label htmlFor="validationDefaultUsername">Username</label>
+                                                <input style={{ background: "rgba(39, 46, 69, 0.6)", color: "#fff", borderColor: "#fff" }} type="text" ref="user" id="validationDefaultUsername" className="form-control" placeholder="Username" required="required" autoFocus />
+                                                <label style={{ color: "#fff" }} htmlFor="validationDefaultUsername">Username</label>
                                             </div>
 
                                             <div className="form-label-group">
-                                                <input type="password" ref="senha" id="inputPassword" className="form-control" placeholder="Senha" required />
-                                                <label htmlFor="inputPassword">Senha</label>
+                                                <input style={{ background: "rgba(39, 46, 69, 0.6)", color: "#fff", borderColor: "#fff" }} type="password" ref="senha" id="inputPassword" className="form-control" placeholder="Senha" required />
+                                                <label style={{ color: "#fff" }} htmlFor="inputPassword">Senha</label>
                                             </div>
 
                                             {this.state.error ? <div style={{ textAlign: 'center', color: 'red' }}>
@@ -126,13 +126,13 @@ class Login extends Component {
                                             </div> : null}
 
 
-                                            <div className="custom-control custom-checkbox mb-3">
+                                            {/* <div className="custom-control custom-checkbox mb-3">
                                                 <input type="checkbox" className="custom-control-input" id="customCheck1" />
                                                 <label className="custom-control-label" htmlFor="customCheck1">Lembrar senha</label>
-                                            </div>
-                                            <button className="btn btn-lg btn-primary btn-sm btn-block text-uppercase" type="submit">Entrar</button>
+                                            </div> */}
+                                            <button style={{ background: "rgb(19, 136, 8)", borderColor: "rgb(19, 136, 8)" }} className="btn btn-lg btn-primary btn-sm btn-block text-uppercase" type="submit">Entrar</button>
 
-                                            <button type="button" className="btn btn-link btn-cadastro text-uppercase" onClick={(e) => this._register(e)}>Não possui cadastro? clique aqui</button>
+                                            <button style={{ color: "rgb(19, 136, 8)" }} type="button" className="btn btn-link btn-cadastro text-uppercase" onClick={(e) => this._register(e)}>Não possui cadastro? clique aqui</button>
 
                                         </form>
                                     </div>

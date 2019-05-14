@@ -298,7 +298,7 @@ class App extends Component {
 
 
         return (
-          // <p key={index} className="list-group-item list-group-item-action" onClick={(e) => this.clickMarker(e, index)}>{value.nomeRuaTransversal}</p>
+          // <p key={index} className="list-group-item list-group-item-action" onClick={(e) => this.clickMarker(e, index)}>{value.nomeRuaTransversal}</p> rgba(32, 38, 60, 0.7)
           <div key={index}
             style={{
               fontFamily: "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif",
@@ -315,7 +315,7 @@ class App extends Component {
               // color: "#fff",
               // border: "1px solid #6b37af",
               borderRadius: 6
-            }} onClick={() => this.setState({
+            }} onClick={this.state.ruaAtual !== null ? null : () => this.setState({
               ruaAtual: value
             }, () => this.getTransversais())}>
 
@@ -515,11 +515,11 @@ class App extends Component {
               <div className="card-title">
 
                 {this.renderRua()}
-
+                {/* 
                 <form className="form-inline search-form" style={{ marginTop: 10 }}>
                   <input className="form-control search-home" ref="search" type="search" placeholder="Search" aria-label="Search" style={{ marginRight: 2 }} />
                   <button className="btn btn-outline-success search-button" type="submit" onClick={(e) => this.busca(e)}><GoSearch /></button>
-                </form>
+                </form> */}
 
               </div>
               <div className="list-group">

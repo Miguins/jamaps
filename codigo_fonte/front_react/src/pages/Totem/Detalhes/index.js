@@ -296,6 +296,7 @@ class Detalhes extends Component {
                 var hoje = dados.filter(this.isToday)
 
                 var semana = dados.filter((dado) => {
+                    console.log(hoje[0])
                     return parseInt(dado.dia) >= (parseInt(hoje[0].dia) - 7)
                 })
 
@@ -344,6 +345,7 @@ class Detalhes extends Component {
 
 
                 reducedObjArr.map((a) => {
+                    console.log(a)
                     var b = {
                         dia: a.key,
                         trafego: (a.value / 24).toFixed(1)
@@ -724,7 +726,7 @@ class Detalhes extends Component {
                                                 semanaSelected: false
                                             })
                                         }}>Dia</button>
-                                <button style={
+                                {/* <button style={
                                     !this.state.semanaSelected ? {
                                         outline: 'none',
                                         paddingLeft: 25,
@@ -745,7 +747,7 @@ class Detalhes extends Component {
                                             this.setState({
                                                 semanaSelected: true
                                             })
-                                        }}>Semana</button>
+                                        }}>Semana</button> */}
                             </div>
                         </div>
 
@@ -789,7 +791,7 @@ class Detalhes extends Component {
                                 height: "80%"
                             }}>
                                 {/* Tráfego Média */}
-                                <h4 style={{ color: "rgb(98, 103, 134)" }}>Tráfego</h4>
+                                <h4 style={{ color: "rgb(98, 103, 134)" }}>Tráfego Atual</h4>
                                 <Circle style={{
                                     width: "75%",
                                     height: "75%",
