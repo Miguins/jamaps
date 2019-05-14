@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route, Link } from "react-router-dom"
+import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom"
 import { PrivateRoute } from '../../components/PrivateRoute/index'
 
 import Home from '../../pages/Home/App'
@@ -44,10 +44,10 @@ class Main extends Component {
 
     hoverOn() {
         if (this.state.visible === false) {
-            console.log('abriu')
+            // console.log('abriu')
             this.handleShowClick()
         } else {
-            console.log('fecha')
+            // console.log('fecha')
             this.handleHideClick()
         }
     }
@@ -124,7 +124,7 @@ class Main extends Component {
                             </div>
 
                             <div className="footer-content">
-                                <h6>&#9400; JamalCorp, 2019</h6>
+                                <h6>&#9400; Jamal Corporation , 2019</h6>
                             </div>
 
 

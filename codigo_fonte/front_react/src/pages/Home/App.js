@@ -3,14 +3,18 @@ import axios from 'axios'
 import './App.css'
 import AdHereMap from '../../here-map-ad-here/index'
 import Marker from '../../here-map-ad-here/marker/index'
-import { GoArrowLeft, GoSearch } from 'react-icons/go'
+import { GoArrowLeft, GoSearch, GoInfo } from 'react-icons/go'
 import Pagination from 'react-js-pagination'
-import auth from '../../config/auth/index'
 import { withRouter } from 'react-router-dom'
+import ReactTooltip from 'react-tooltip'
+import { RotateSpinner } from 'react-spinners-kit';
+import { IoIosArrowForward } from 'react-icons/io'
 
 class App extends Component {
 
   state = {
+    loading: true,
+    loadingLista: false,
     activePage: 1,
     busca: false,
     img: "",
@@ -25,11 +29,18 @@ class App extends Component {
     markerCenter: null,
     ruaAtual: null,
     paginaAtual: 1,
-    pageList: []
+    pageList: [],
+    oldList: [],
+    listaTotem: [],
+    activePage: 1
   }
 
   componentDidMount() {
     this.getRuas()
+    this.getTotens()
+    this.setState({
+      loading: false
+    })
   }
 
   handlePageChange = (pageNumber) => {
@@ -37,27 +48,101 @@ class App extends Component {
     this.setState({ paginaAtual: pageNumber });
   }
 
-  clickMarker = async (e, index) => {
-    e.preventDefault()
+  getTotens = async () => {
+
+    try {
+      // var urlLocal = "http://localhost:3001/"
+      var urlHeroku = "https://back-jamapas2.herokuapp.com/"
+      const data = await axios.get(urlHeroku + "totems", {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem('auth')
+        }
+      });
+
+      var pageList = []
+
+
+      for (var i = 0; i < data.data.data.length / 7; i++) {
+        var itens = []
+        for (var j = i * 7; j < (i * 7) + 7; j++) {
+          if (data.data.data[j] !== undefined) {
+
+            itens[j] = data.data.data[j]
+          }
+        }
+        pageList[i] = itens
+      }
+
+      // console.log(pageList)
+
+      this.setState({
+        listaTotem: data.data.data,
+        pageList: pageList,
+      })
+
+      // console.log(data);
+
+    } catch (e) {
+      console.log(e)
+      this.setState({
+        loading: false
+      })
+    }
+  }
+
+  getTransversais = async () => {
 
     // console.log(this.state.ruas[index].idRua)
     if (!this.state.details) {
+      var oldList = this.state.lista
       try {
         // var urlLocal = "http://localhost:3001/"
         var urlHeroku = "https://back-jamapas2.herokuapp.com/"
-        const data = await axios.get(urlHeroku + "gethere/cruzamento/" + this.state.ruas[index].idRua, {
+        const data = await axios.get(urlHeroku + "gethere/cruzamento/" + this.state.ruaAtual.idRua, {
           headers: {
-            Authorization: "Bearer " + auth.isAuth()
+            Authorization: "Bearer " + localStorage.getItem('auth')
           }
         });
+        var cont = 0
+        data.data.data.rua_transversais.map((value) => {
+          if (value.nomeRuaTransversal === data.data.data.rua_transversais[0].nomeRuaTransversal) {
+            cont++
+          }
+        })
+
         // console.log(data)
+        let counts = data.data.data.rua_transversais.reduce((prev, curr) => {
+          let count = prev.get(curr.nomeRuaTransversal) || 0;
+          // console.log(prev)
+          prev.set(curr.nomeRuaTransversal, curr.nivelDeTrafego + count);
+          return prev;
+        }, new Map());
+
+        // then, map your counts object back to an array
+        let reducedObjArr = [...counts].map(([nomeRuaTransversal, trafego]) => {
+          return { nomeRuaTransversal, trafego }
+        })
+        console.log(reducedObjArr)
+
+        var pageList = []
+
+
+        for (var i = 0; i < reducedObjArr.length / 8; i++) {
+          var itens = []
+          for (var j = i * 8; j < (i * 8) + 8; j++) {
+            if (reducedObjArr[j] !== undefined) {
+
+              itens[j] = reducedObjArr[j]
+            }
+          }
+          pageList[i] = itens
+        }
+
         this.setState({
-          lista: data.data.data.rua_transversais,
+          lista: pageList,
           details: true,
           busca: false,
-          ruaAtual: this.state.ruas[index].nomeRuaPrincipal,
-          paginaAtual: 1,
-          ultimoPagina: 9
+          oldList: oldList
         })
 
       } catch (e) {
@@ -65,7 +150,7 @@ class App extends Component {
       }
     } else {
 
-      var string = this.state.lista[index].pontosDeEncontro
+      var string = this.state.ruaAtual.pontosDeEncontro
 
       var string3 = string[string.length - 1]
       // console.log(string)
@@ -74,7 +159,7 @@ class App extends Component {
 
       for (let index = 0; index < arrayOfStrings.length; index++) {
 
-        console.log(arrayOfStrings[index])
+        // console.log(arrayOfStrings[index])
 
       }
 
@@ -106,7 +191,7 @@ class App extends Component {
       var urlHeroku = "https://back-jamapas2.herokuapp.com/"
       const data = await axios.get(urlHeroku + "gethere/cruzamentos", {
         headers: {
-          Authorization: "Bearer " + auth.isAuth()
+          Authorization: "Bearer " + localStorage.getItem('auth')
         }
       });
 
@@ -126,7 +211,6 @@ class App extends Component {
 
 
       this.setState({
-        ruas: pageList,
         lista: pageList,
         details: false,
         busca: false,
@@ -140,21 +224,111 @@ class App extends Component {
 
   }
 
+  renderTotens = () => {
+
+    if (this.state.pageList.length === 0) {
+      return null
+    }
+
+    return this.state.pageList[this.state.activePage - 1].map((totem, index) => {
+      console.log(totem)
+      return (
+
+
+        <div key={index} style={{
+          fontFamily: "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif",
+          display: 'flex',
+          position: 'relative',
+          flexDirection: 'row',
+          color: 'white',
+          padding: 10,
+          marginLeft: 10,
+          marginRight: 10,
+          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+          marginTop: 5,
+          marginBottom: 5,
+          cursor: "pointer",
+          background: "rgba(39, 46, 69, 0.6)",
+          // color: "#fff",
+          // border: "1px solid #6b37af",
+          borderRadius: 6
+        }}
+          onClick={() => {
+            this.props.history.push({
+              pathname: "/detalhes",
+              state: {
+                totem: totem
+              }
+            })
+          }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <h3 style={{ marginBottom: 0 }}>{totem.nome}</h3>
+            <h6>{totem.ruaPrincipal} com {totem.ruaTransversal}</h6>
+          </div>
+        </div>
+
+      )
+    })
+
+
+  }
+
   renderItems = () => {
+
+    if (this.state.loadingLista) {
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center', height: '100vh' }}>
+          <div className="loading">
+            <RotateSpinner
+              size={45}
+              color="rgb(177, 77,198)"
+              loading={this.state.loading}
+            />
+            {/* <h2 className="text-white">Carregando</h2> */}
+          </div>
+        </div>
+      )
+    }
 
     if (this.state.lista.length === 0) {
       return null
     }
+    if (this.state.ruaAtual !== null) {
+      return this.state.lista[this.state.paginaAtual - 1].map((value, index) => {
+
+
+        return (
+          // <p key={index} className="list-group-item list-group-item-action" onClick={(e) => this.clickMarker(e, index)}>{value.nomeRuaTransversal}</p>
+          <div key={index}
+            style={{
+              fontFamily: "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif",
+              display: 'flex',
+              position: 'relative',
+              flexDirection: 'row',
+              color: 'white',
+              padding: 10,
+              boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+              width: "100%",
+              margin: 5,
+              cursor: "pointer",
+              background: "rgba(39, 46, 69, 0.6)",
+              // color: "#fff",
+              // border: "1px solid #6b37af",
+              borderRadius: 6
+            }} onClick={() => this.setState({
+              ruaAtual: value
+            }, () => this.getTransversais())}>
+
+            <h4 style={{ marginBottom: 0, color: 'white' }}>{value.nomeRuaTransversal}</h4>
+
+          </div>
+        )
+
+      })
+    }
     // console.log(this.state.lista)
     return this.state.lista[this.state.paginaAtual - 1].map((value, index) => {
 
-      // arrayOfStrings 0 = ano e 1 = mes 
-      var arrayOfStrings = value.created_at.split("-");
-      // arrayOfStrings2 0 = dia
-      var arrayOfStrings2 = arrayOfStrings[2].split("T");
-      // arrayOfStrings3 0 = hora e 1 = minuto
-      var arrayOfStrings3 = arrayOfStrings2[1].split(":");
-      console.log(" Hora: " + arrayOfStrings3[0] + ":" + arrayOfStrings3[1] + "Dia: " + arrayOfStrings2[0] + " Mes: " + arrayOfStrings[1] + " Ano: " + arrayOfStrings[0])
 
       return (
         // <p key={index} className="list-group-item list-group-item-action" onClick={(e) => this.clickMarker(e, index)}>{value.nomeRuaTransversal}</p>
@@ -174,11 +348,13 @@ class App extends Component {
             // color: "#fff",
             // border: "1px solid #6b37af",
             borderRadius: 6
-          }}>
+          }} onClick={() => this.setState({
+            ruaAtual: value
+          }, () => this.getTransversais())}>
 
 
 
-          <h4 style={{ marginBottom: 0, color: 'white' }}>{value.nomeRuaPrincipal}</h4>
+          <h4 style={{ marginBottom: 0, color: 'white' }}>{value.nomeRuaPrincipal} {value.idRua.includes("+") ? "+" : "-"}</h4>
 
 
           {/* <div style={{ display: 'flex', justifyContent: 'right', marginLeft: 15 }}>
@@ -206,12 +382,13 @@ class App extends Component {
       // console.log("foi")
       return (
         <div>
-          <button style={{ height: 40, width: 50 }} className="btn btn-light" onClick={() => this.setState({ ruaAtual: null, details: false, markerCenter: null })} ><GoArrowLeft /></button>
-          <h5 className="text-titulo-clicked">{this.state.ruaAtual}</h5>
+          <button style={{ position: 'absolute', top: 10, left: 25, background: 'transparent', color: "#ccc", borderColor: '#ccc' }} className="btn btn-light"
+            onClick={() => this.setState({ ruaAtual: null, details: false, markerCenter: null, lista: this.state.oldList, oldList: [] })} ><GoArrowLeft style={{ height: 15, width: 15, }} /></button>
+          <h5 style={{ color: "#fff", marginBottom: 5, marginTop: 1 }}>{this.state.ruaAtual.nomeRuaPrincipal}</h5>
         </div>
       )
     } else {
-      return <h5 className="text-titulo" style={{ color: "#fff" }}>Totens</h5>
+      return <h5 className="text-titulo" style={{ color: "#fff", marginBottom: 5 }}>Lista de Rua</h5>
     }
   }
 
@@ -267,61 +444,115 @@ class App extends Component {
   }
 
   render() {
+    if (this.state.loading) {
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center', height: '100vh' }}>
+          <div className="loading">
+            <RotateSpinner
+              size={45}
+              color="rgb(177, 77,198)"
+              loading={this.state.loading}
+            />
+            {/* <h2 className="text-white">Carregando</h2> */}
+          </div>
+        </div>
+      )
+    }
 
     return (
-      <div className="App row mx-auto" >
-        <div className="mapStyle">
-          {/* {console.log(this.state.mapProps.lat)} */}
+      <div className="App mx-auto" style={{ display: "flex", flexDirection: 'column', flexWrap: 'none' }} >
 
-          <AdHereMap key={Math.random()} onChange={this._onChange} center={this.state.center} zoom={this.state.zoom} onMapLoaded={() => { }}>
-            {this.state.markerCenter ? <Marker lat={this.state.markerCenter.lat} lng={this.state.markerCenter.lng} /> : null}
-          </AdHereMap>
+        <div style={{ flex: 1, marginBottom: 9, display: 'flex' }}>
+
+          <div className="table-container" style={{ flex: 1, height: "100%", position: 'relative', background: "rgba(32, 38, 60, 0.7)", borderRadius: 6 }}>
+            <div className="title-container" style={{ display: 'flex' }}>
+              <h4 className="text-left text-white" style={{ flex: 4, marginTop: "4px", paddingTop: 10, paddingBottom: 6, paddingLeft: 20, paddingRifht: 10 }}>Totens destacados</h4>
+              <div style={{ display: 'flex', justifyContent: 'right', color: '#fff', cursor: 'pointer' }} onClick={() => this.props.history.push("/totem")}>
+                <h4 style={{ position: "absolute", right: 30, top: 12 }}>Ver mais</h4>
+                <IoIosArrowForward style={{ height: 45, width: 25, position: "absolute", right: 5 }} />
+              </div>
+            </div>
+
+            <div className="table table-hover" style={{ marginTop: "3px" }}>
+
+              {this.state.pageList.length === 0 ?
+                <div style={{ display: 'flex', justifyContent: 'center', color: '#fff', alignItems: 'center' }} onClick={() => this.props.history.push("/totem")}>
+                  <h4 >Não há totens registrados</h4>
+                </div> : this.renderTotens()}
+            </div>
+          </div>
 
         </div>
+        <div style={{ flex: 1, display: 'flex' }}>
+          <div className="mapStyle">
+            {/* {console.log(this.state.mapProps.lat)} */}
+
+            <AdHereMap key={Math.random()} onChange={this._onChange} center={this.state.center} zoom={this.state.zoom} onMapLoaded={() => { }}>
+              {this.state.markerCenter ? <Marker lat={this.state.markerCenter.lat} lng={this.state.markerCenter.lng} /> : null}
+            </AdHereMap>
+
+          </div>
 
 
-        <section className="sectionCard" >
-          <div className="card card-style" style={{ backgroundColor: 'rgb(32, 38, 60, 0.70)' }}>
-            <div className="card-title" >
+          <section className="sectionCard" style={{ height: '100%' }}>
+            <div className="card card-style" style={{ backgroundColor: 'rgb(32, 38, 60, 0.70)', position: 'relative' }}>
+              <ReactTooltip />
+              <button style={{
+                outline: 'none',
+                right: 25,
+                padding: 3,
+                position: 'absolute',
+                background: 'rgba(39, 46, 69, 0.0)',
+                color: '#ddd',
+                borderRadius: 6,
+                borderColor: 'transparent'
+              }} data-tip="Os símbolos + e - representam o sentido da rua baseado em suas coordenadas">
+                <GoInfo style={{
+                  width: 25,
+                  height: 25
+                }} />
+              </button>
+              <div className="card-title">
 
-              {this.renderRua()}
+                {this.renderRua()}
 
-              <form className="form-inline search-form" style={{ marginTop: 5 }}>
-                <input className="form-control search-home" ref="search" type="search" placeholder="Search" aria-label="Search" style={{ marginRight: 2 }} />
-                <button className="btn btn-outline-success search-button" type="submit" onClick={(e) => this.busca(e)}><GoSearch /></button>
-              </form>
+                <form className="form-inline search-form" style={{ marginTop: 10 }}>
+                  <input className="form-control search-home" ref="search" type="search" placeholder="Search" aria-label="Search" style={{ marginRight: 2 }} />
+                  <button className="btn btn-outline-success search-button" type="submit" onClick={(e) => this.busca(e)}><GoSearch /></button>
+                </form>
 
-            </div>
-            <div className="list-group">
-              <div className="table table-hover">
-                {/* <thead>
+              </div>
+              <div className="list-group">
+                <div className="table table-hover">
+                  {/* <thead>
                   <tr>
                     <th scope="col">Rua</th>
                     <th scope="col">Tráfego</th>
                   </tr>
                 </thead> */}
-                {/* <tbody> */}
+                  {/* <tbody> */}
 
-                {this.renderItems()}
+                  {this.renderItems()}
 
-                {/* </tbody> */}
-              </div>
+                  {/* </tbody> */}
+                </div>
 
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Pagination
-                  activePage={this.state.paginaAtual}
-                  itemsCountPerPage={8}
-                  totalItemsCount={this.state.lista.length}
-                  pageRangeDisplayed={5}
-                  onChange={this.handlePageChange}
-                  itemClass="page-item"
-                  linkClass="page-link"
-                />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <Pagination
+                    activePage={this.state.paginaAtual}
+                    itemsCountPerPage={8}
+                    totalItemsCount={this.state.lista.length}
+                    pageRangeDisplayed={5}
+                    onChange={this.handlePageChange}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-      </div>
+          </section>
+        </div>
+      </div >
     );
   }
 }

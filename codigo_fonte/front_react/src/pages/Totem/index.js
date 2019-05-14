@@ -80,10 +80,10 @@ class Totem extends Component {
                 var urlHeroku = "https://back-jamapas2.herokuapp.com/"
                 const data = await axios.get(urlHeroku + "gethere/cruzamento/" + this.state.totemAtual.idRua, {
                     headers: {
-                        Authorization: "Bearer " + auth.isAuth()
+                        Authorization: "Bearer " + localStorage.getItem('auth')
                     }
                 });
-                console.log(data)
+                // console.log(data)
 
                 if (data.data.data["rua_transversais"]) {
                     var string = data.data.data["rua_transversais"][0].pontosDeEncontro
@@ -95,7 +95,7 @@ class Totem extends Component {
 
                     for (let index = 0; index < arrayOfStrings.length; index++) {
 
-                        console.log(arrayOfStrings[index])
+                        // console.log(arrayOfStrings[index])
 
                     }
 
@@ -130,7 +130,7 @@ class Totem extends Component {
             var urlHeroku = "https://back-jamapas2.herokuapp.com/"
             const data = await axios.get(urlHeroku + "totems", {
                 headers: {
-                    Authorization: "Bearer " + auth.isAuth()
+                    Authorization: "Bearer " + localStorage.getItem('auth')
                 }
             });
 
@@ -157,7 +157,7 @@ class Totem extends Component {
                 loading: false
             })
 
-            console.log(data);
+            // console.log(data);
 
         } catch (e) {
             console.log(e)
@@ -178,11 +178,11 @@ class Totem extends Component {
             var urlHeroku = "https://back-jamapas2.herokuapp.com/"
             const data = await axios.get(urlHeroku + "gethere/cruzamentos", {
                 headers: {
-                    Authorization: "Bearer " + auth.isAuth()
+                    Authorization: "Bearer " + localStorage.getItem('auth')
                 }
             });
 
-            console.log(data)
+            // console.log(data)
 
             // let counts = data.data.data.reduce((prev, curr) => {
             //     let count = prev.get(curr.nomeRuaTransversal) || 0;
@@ -282,7 +282,7 @@ class Totem extends Component {
                     'longitude': this.state.totemAtual.longitude
                 }
 
-                console.log(requestBody)
+                // console.log(requestBody)
                 // var urlLocal = "http://localhost:3001/"
                 var urlHeroku = "https://back-jamapas2.herokuapp.com/"
 
@@ -290,7 +290,7 @@ class Totem extends Component {
                     method: 'PUT',
                     headers: {
                         'content-type': 'application/x-www-form-urlencoded',
-                        Authorization: "Bearer " + auth.isAuth()
+                        Authorization: "Bearer " + localStorage.getItem('auth')
                     },
                     params: requestBody,
                     // data: qs.stringify(data),
@@ -300,7 +300,7 @@ class Totem extends Component {
 
                 const data = await axios(options)
 
-                console.log(data)
+                // console.log(data)
                 this.getTotens()
 
                 // console.log("Adicionado pega crl")
@@ -326,7 +326,7 @@ class Totem extends Component {
         }
         // console.log(this.state.ruasTransversais)
         if (this.state.ruasTransversais.length === 0) {
-            console.log(this.state.totemAtual)
+            // console.log(this.state.totemAtual)
             return <option>{this.state.totemAtual.ruaTransversal}</option>
         }
         return this.state.ruasTransversais.map((rua, index) => {
@@ -363,7 +363,7 @@ class Totem extends Component {
 
 
 
-                console.log(requestBody)
+                // console.log(requestBody)
                 // var urlLocal = "http://localhost:3001/"
                 var urlHeroku = "https://back-jamapas2.herokuapp.com/"
 
@@ -371,7 +371,7 @@ class Totem extends Component {
                     method: 'POST',
                     headers: {
                         'content-type': 'application/x-www-form-urlencoded',
-                        Authorization: "Bearer " + auth.isAuth()
+                        Authorization: "Bearer " + localStorage.getItem('auth')
                     },
                     params: requestBody,
                     // data: qs.stringify(data),
@@ -380,7 +380,7 @@ class Totem extends Component {
 
 
                 const data = await axios(options)
-                console.log(data)
+                // console.log(data)
                 this.getTotens()
 
                 // console.log("Adicionado pega crl")
@@ -615,10 +615,10 @@ class Totem extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="body-ruas">
+                    {/* <div className="body-ruas">
                         <div className="card-ruas-style">
 
-                            {/* <div className="separador"></div> */}
+                            
                             <div className="table-container" style={{ height: "100%", position: 'relative' }}>
                                 <div className="title-container" >
                                     <h4 className="text-left text-white" style={{ marginTop: "4px", marginBottom: 3 }}>Lista de Ruas</h4>
@@ -642,7 +642,7 @@ class Totem extends Component {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div >
             )
 

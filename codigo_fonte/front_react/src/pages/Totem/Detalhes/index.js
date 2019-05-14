@@ -2,14 +2,18 @@ import React, { Component } from 'react'
 import './index.css'
 import { withRouter } from 'react-router-dom'
 import Axios from 'axios';
-import auth from '../../../config/auth/index'
-import { AreaChart, XAxis, Tooltip, Area } from 'recharts'
+import { AreaChart, XAxis, YAxis, Tooltip, Area, BarChart, Bar, Cell, CartesianGrid, Legend, ReferenceLine, } from 'recharts'
 import { GoPencil, GoTrashcan } from 'react-icons/go'
 import { IoIosArrowBack } from 'react-icons/io'
 import { Circle } from 'rc-progress';
 import { ToastsContainer, ToastsStore } from 'react-toasts';
 import Scheduler from './scheduler.js'
 import { RotateSpinner } from 'react-spinners-kit';
+import {
+
+} from 'recharts';
+
+
 
 const btnClicked = {
     outline: 'none',
@@ -31,46 +35,22 @@ class Detalhes extends Component {
 
 
     state = {
+        accessToken: '',
         width: window.innerWidth,
         totem: [],
-        data: [
-            {
-                name: "Domingo",
-                trafego: 2.1
-            },
-            {
-                name: "Segunda",
-                trafego: 7
-            },
-            {
-                name: "Terça",
-                trafego: 7.2
-            },
-            {
-                name: "Quarta",
-                trafego: 6.9
-            },
-            {
-                name: "Quinta",
-                trafego: 8.3
-            },
-            {
-                name: "Sexta",
-                trafego: 8.6
-            },
-            {
-                name: "Sabado",
-                trafego: 6.3
-            },
-
-        ],
+        dataDia: [],
+        dataSemana: [],
         trafegoMedio: 0,
         semanaSelected: false,
-        rua: []
+        rua: [],
+        openTotem: '',
+        dadosScheduler: [],
+        dadosDemo: []
     }
 
     componentDidMount() {
         // console.log(this)
+        this.getAccessToken()
         this.getTotem()
         if (this.props.location.state.rua !== undefined) {
             this.getDadosRua()
@@ -87,6 +67,97 @@ class Detalhes extends Component {
         this.setState({ width: window.innerWidth });
     }
 
+    getAccessToken = async () => {
+
+        try {
+
+            var bodyForm = new FormData()
+
+            bodyForm.set('client_id', '1HGBE2fUm2hYC67B')
+            bodyForm.set('client_secret', '6babe2c5031e4b4c9506edf4da1ece9b')
+            bodyForm.set('grant_type', 'client_credentials')
+
+            const data = await Axios.post("https://www.arcgis.com/sharing/rest/oauth2/token", bodyForm, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            // console.log(data)
+            this.setState({
+                accessToken: data.data.access_token
+            })
+
+        } catch (e) {
+            console.log(e)
+            this.props.history.push("")
+        }
+
+    }
+
+    getAnalisys = (value) => {
+
+        this.state.rua.rua_transversais.map((rua, index) => {
+            if (index === value) {
+                // console.log(index)
+                // console.log(rua)
+
+                var string = rua.pontosDeEncontro
+
+                var string3 = string[string.length - 1]
+                // console.log(string)
+
+                var arrayOfStrings = string3.split(" ");
+
+                for (let index = 0; index < arrayOfStrings.length; index++) {
+
+                    // console.log(arrayOfStrings[index])
+
+                }
+
+                var string2 = arrayOfStrings[0].split(",")
+
+                var center = {
+                    lat: parseFloat(string2[0]),
+                    lng: parseFloat(string2[1]),
+                }
+
+
+                var bodyFormData2 = new FormData();
+                bodyFormData2.set('studyAreas',
+                    '[{"geometry":{"x":' + center.lng + ',"y":' + center.lat + '}}]');
+                bodyFormData2.set('dataCollections', '["KeyFacts"]');
+                bodyFormData2.set('studyAreasOptions', '{"areaType":"RingBuffer","bufferUnits":"esriKilometers","bufferRadii":[1]}');
+                bodyFormData2.set('returnGeometry', 'false');
+                bodyFormData2.set('f', 'json');
+                bodyFormData2.set('token', this.state.accessToken);
+
+                Axios.post("https://geoenrich.arcgis.com/arcgis/rest/services/World/geoenrichmentserver/Geoenrichment/Enrich",
+                    bodyFormData2,
+                    {
+                        headers: { "Content-Type": "application/json" },
+                    }
+                ).then(res => {
+                    console.log(res)
+                    console.log(res.data.results[0].value.FeatureSet[0].features[0].attributes)
+
+                    var a = []
+
+                    res.data.results[0].value.FeatureSet[0].features[0].attributes.map((ab) => {
+                        console.log(ab)
+                    })
+
+                    // this.setState({
+                    //     dadosDemo: 
+                    // })
+                })
+
+            }
+        })
+
+
+
+    }
 
     removeItem = async (id) => {
 
@@ -97,10 +168,10 @@ class Detalhes extends Component {
                 var urlHeroku = "https://back-jamapas2.herokuapp.com/"
                 const data = await Axios.delete(urlHeroku + "totem/delete/" + this.props.location.state.totem.id, {
                     headers: {
-                        Authorization: "Bearer " + auth.isAuth()
+                        Authorization: "Bearer " + localStorage.getItem('auth')
                     }
                 });
-                console.log(data)
+                // console.log(data)
 
                 this.props.history.goBack()
 
@@ -118,7 +189,7 @@ class Detalhes extends Component {
             var urlHeroku = "https://back-jamapas2.herokuapp.com/"
             const data = await Axios.get(urlHeroku + "totem/" + this.props.location.state.totem.id, {
                 headers: {
-                    Authorization: "Bearer " + auth.isAuth()
+                    Authorization: "Bearer " + localStorage.getItem('auth')
                 }
             })
 
@@ -142,11 +213,11 @@ class Detalhes extends Component {
             var urlHeroku = "https://back-jamapas2.herokuapp.com/"
             const data = await Axios.get(urlHeroku + "gethere/cruzamento/" + this.props.location.state.rua.idRua, {
                 headers: {
-                    Authorization: "Bearer " + auth.isAuth()
+                    Authorization: "Bearer " + localStorage.getItem('auth')
                 }
             })
 
-            console.log(data)
+            // console.log(data)
 
             this.setState({
                 rua: data.data.data
@@ -156,6 +227,20 @@ class Detalhes extends Component {
 
         } catch (e) {
             console.log(e)
+        }
+    }
+
+    isToday = (value) => {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = mm + '/' + dd + '/' + yyyy;
+        if (value.mes === mm) {
+            if (value.dia == dd) {
+                return value
+            }
         }
     }
 
@@ -175,17 +260,111 @@ class Detalhes extends Component {
             try {
 
                 var urlHeroku = "https://back-jamapas2.herokuapp.com/"
-                const data = await Axios.get(urlHeroku + "gethere/cruzamento/" + this.props.location.state.totem.idRua, {
+                const data = await Axios.get(urlHeroku + "gethere/cruzamento/" + this.props.location.state.totem.idRuaTransversal, {
                     headers: {
-                        Authorization: "Bearer " + auth.isAuth()
+                        Authorization: "Bearer " + localStorage.getItem('auth')
                     }
                 })
 
-                console.log(data)
+                var dados = []
 
-                // this.setState({
-                //     rua: data.data.data
-                // })
+                data.data.data.rua_transversais.map((rua, index) => {
+                    if (rua.nomeRuaTransversal === this.props.location.state.totem.ruaTransversal) {
+
+                        // arrayOfStrings 0 = ano e 1 = mes 
+                        var arrayOfStrings = rua.created_at.split("-");
+                        // arrayOfStrings2 0 = dia
+                        var arrayOfStrings2 = arrayOfStrings[2].split("T");
+                        // arrayOfStrings3 0 = hora e 1 = minuto
+                        var arrayOfStrings3 = arrayOfStrings2[1].split(":");
+
+                        var horaFormata = (parseInt(arrayOfStrings3[0]) - 3) < 0 ? parseInt(arrayOfStrings3[0]) - 3 + 24 : parseInt(arrayOfStrings3[0]) - 3
+                        var diaFormata = horaFormata > 20 && horaFormata < 24 ? parseInt(arrayOfStrings2[0]) - 1 : parseInt(arrayOfStrings2[0])
+
+                        console.log(" Hora: " + horaFormata + ":" + arrayOfStrings3[1] + " Dia: " + diaFormata + " Mes: " + arrayOfStrings[1] + " Ano: " + arrayOfStrings[0])
+                        // console.log(rua.nivelDeTrafego)
+                        var d = {
+                            mes: arrayOfStrings[1],
+                            dia: diaFormata,
+                            hora: horaFormata + ":" + arrayOfStrings3[1],
+                            trafego: rua.nivelDeTrafego
+                        }
+                        dados.push(d)
+                    }
+                })
+
+                var hoje = dados.filter(this.isToday)
+
+                var semana = dados.filter((dado) => {
+                    return parseInt(dado.dia) >= (parseInt(hoje[0].dia) - 7)
+                })
+
+                let counts = semana.reduce((prev, curr) => {
+                    let count = prev.get(curr.dia) || 0;
+                    // console.log(prev)
+                    prev.set(curr.dia, curr.trafego + count);
+                    return prev;
+                }, new Map());
+
+                // then, map your counts object back to an array
+                let reducedObjArr = [...counts].map(([key, value]) => {
+                    return { key, value }
+                })
+
+                var sem = [
+                    {
+                        dia: (reducedObjArr[reducedObjArr.length - 1].key - 6) + "/05",
+                        trafego: 0
+                    },
+                    {
+                        dia: (reducedObjArr[reducedObjArr.length - 1].key - 5) + "/05",
+                        trafego: 0
+                    },
+                    {
+                        dia: (reducedObjArr[reducedObjArr.length - 1].key - 4) + "/05",
+                        trafego: 0
+                    },
+                    {
+                        dia: (reducedObjArr[reducedObjArr.length - 1].key - 3) + "/05",
+                        trafego: 0
+                    },
+                    {
+                        dia: (reducedObjArr[reducedObjArr.length - 1].key - 2) + "/05",
+                        trafego: 0
+                    },
+                    {
+                        dia: (reducedObjArr[reducedObjArr.length - 1].key - 1) + "/05",
+                        trafego: 0
+                    },
+                    {
+                        dia: (reducedObjArr[reducedObjArr.length - 1].key) + "/05",
+                        trafego: 0
+                    },
+                ]
+
+
+                reducedObjArr.map((a) => {
+                    var b = {
+                        dia: a.key,
+                        trafego: (a.value / 24).toFixed(1)
+                    }
+                    for (var i = 0; i < sem.length; i++) {
+                        if (a.key === sem[i].dia) {
+                            sem[i] = b
+                        }
+                    }
+                })
+
+                this.setState({
+                    dadosScheduler: dados,
+                    dataDia: hoje.filter((b) => {
+                        if (parseInt(b.hora.split(":")[0]) >= (parseInt(hoje[hoje.length - 1].hora.split(":")[0]) / 2)) {
+                            return b
+                        }
+                    }),
+                    dataSemana: sem,
+                    trafegoMedio: hoje[hoje.length - 1].trafego
+                })
 
 
             } catch (e) {
@@ -214,7 +393,7 @@ class Detalhes extends Component {
         var value = ''
         var cont = 0
         this.state.rua.rua_transversais.map((rua, index) => {
-            console.log(rua)
+            // console.log(rua)
             // console.log(new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(rua.created_at))
             if (value === '') {
                 value = rua.nomeRuaTransversal
@@ -232,18 +411,21 @@ class Detalhes extends Component {
             return prev;
         }, new Map());
 
+        // console.log(counts)
+
         // then, map your counts object back to an array
         let reducedObjArr = [...counts].map(([key, value]) => {
             return { key, value }
         })
 
-        console.log(reducedObjArr);
-
+        console.log(reducedObjArr)
 
 
         return reducedObjArr.map((rua, index) => {
+            // console.log
             return (
                 <div key={index}
+                    onClick={() => this.getAnalisys(index)}
                     style={{
                         fontFamily: "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif",
                         display: 'flex',
@@ -263,11 +445,11 @@ class Detalhes extends Component {
 
 
 
-                    <h4 style={{ marginBottom: 0, color: 'white' }}>{rua.key}</h4>
+                    <h4 style={{ marginBottom: 0, color: 'white', flex: 6 }}>{rua.key}</h4>
 
 
-                    <div style={{ display: 'flex', justifyContent: 'right', marginLeft: 15 }}>
-                        <h4>{(rua.value / cont).toFixed(1)}</h4>
+                    <div style={{ display: 'flex', justifyContent: 'right', flex: 1 }}>
+                        <h4>Tráfego: {(rua.value / cont).toFixed(1)}</h4>
                     </div>
 
                 </div>
@@ -324,8 +506,8 @@ class Detalhes extends Component {
                                 background: "rgba(32, 38, 60, 0.6)",
                                 borderRadius: 6
                             }}>
-                                <h4 style={{ color: "rgb(98, 103, 134)" }}>Performance</h4>
-                                <AreaChart width={this.state.width * 0.55} height={250} data={this.state.data}
+                                <h4 style={{ color: "rgb(98, 103, 134)" }}>Demografia</h4>
+                                {/* <AreaChart width={this.state.width * 0.55} height={250} data={this.state.semanaSelected ? this.state.dataSemana : this.state.dataDia}
                                     margin={{ top: 0, right: 30, left: 30, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -334,15 +516,37 @@ class Detalhes extends Component {
                                         </linearGradient>
                                     </defs>
                                     <XAxis dataKey="name" stroke="rgb(98, 103, 134)" />
-                                    {/* <YAxis stroke="rgb(98, 103, 134)" /> */}
-                                    {/* <CartesianGrid strokeDasharray="3 3" /> */}
+                                    <YAxis stroke="rgb(98, 103, 134)" /> 
+                                    <CartesianGrid strokeDasharray="3 3" />
                                     <Tooltip />
                                     <Area type="monotone" dataKey="trafego" stroke="rgb(114, 39,163)" strokeWidth={1.5} dot={{ stroke: 'rgb(98, 103, 134)', strokeWidth: 1.5 }} fillOpacity={1} fill="url(#colorUv)" />
-                                </AreaChart>
+                                </AreaChart> */}
+                                <BarChart
+                                    width={this.state.width * 0.55}
+                                    height={250}
+                                    data={this.state.dadosDemo}
+                                    stackOffset="sign"
+                                    margin={{
+                                        top: 5, right: 30, left: 20, bottom: 5,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <ReferenceLine y={0} stroke="#000" />
+                                    <Bar dataKey="PAGE01_CY" fill="#8884d8" stackId="stack" />
+                                    <Bar dataKey="PAGE02_CY" fill="#82ca9d" stackId="stack" />
+                                    {/* <Bar dataKey="PAGE03_CY" fill="#8884d8" stackId="stack" />
+                                    <Bar dataKey="PAGE04_CY" fill="#82ca9d" stackId="stack" />
+                                    <Bar dataKey="PAGE05_CY" fill="#8884d8" stackId="stack" /> */}
+                                </BarChart>
+
                                 <div style={{
                                     display: 'flex'
                                 }}>
-                                    <button style={
+                                    {/* <button style={
                                         this.state.semanaSelected ? {
                                             outline: 'none',
                                             paddingLeft: 25,
@@ -385,7 +589,7 @@ class Detalhes extends Component {
                                                 this.setState({
                                                     semanaSelected: true
                                                 })
-                                            }}>Semana</button>
+                                            }}>Semana</button> */}
                                 </div>
                             </div>
 
@@ -481,7 +685,7 @@ class Detalhes extends Component {
                             borderRadius: 6
                         }}>
                             <h4 style={{ color: "rgb(98, 103, 134)" }}>Performance</h4>
-                            <AreaChart width={this.state.width * 0.55} height={250} data={this.state.data}
+                            <AreaChart width={this.state.width * 0.55} height={250} data={this.state.semanaSelected ? this.state.dataSemana : this.state.dataDia}
                                 margin={{ top: 0, right: 30, left: 30, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -489,7 +693,7 @@ class Detalhes extends Component {
                                         <stop offset="95%" stopColor="rgb(51, 36,87)" stopOpacity={0.9} />
                                     </linearGradient>
                                 </defs>
-                                <XAxis dataKey="name" stroke="rgb(98, 103, 134)" />
+                                <XAxis dataKey={this.state.semanaSelected ? "dia" : "hora"} stroke="rgb(98, 103, 134)" />
                                 {/* <YAxis stroke="rgb(98, 103, 134)" /> */}
                                 {/* <CartesianGrid strokeDasharray="3 3" /> */}
                                 <Tooltip />
@@ -561,7 +765,8 @@ class Detalhes extends Component {
                                 borderRadius: 6,
                                 justifyContent: "center",
                                 alignItems: "center",
-                                height: "20%"
+                                height: "20%",
+                                background: 'rgba(32, 38, 60, 0.6)'
                             }}>
                                 <h4 style={{ margin: 0 }}>{this.props.location.state.totem.ruaPrincipal}</h4>
                                 <h4 style={{ margin: 0 }}>{"com " + this.props.location.state.totem.ruaTransversal}</h4>
@@ -600,7 +805,20 @@ class Detalhes extends Component {
 
                 </div>
 
-                <Scheduler />
+                <div style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: 'center',
+                    alignItems: "center"
+                }}>
+                    {this.state.dadosScheduler !== [] ?
+                        // console.log(this.state.dadosScheduler)
+                        <Scheduler
+                            dados={this.state.dadosScheduler} />
+                        : null
+                    }
+                </div>
+
 
                 <button style={{
                     marginLeft: 8,

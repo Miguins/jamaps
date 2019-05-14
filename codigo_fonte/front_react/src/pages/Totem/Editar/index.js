@@ -15,6 +15,7 @@ class Editar extends Component {
 
 
     state = {
+        accessToken: '',
         totemAtual: null,
         autocomplete: [],
         value: '',
@@ -34,6 +35,8 @@ class Editar extends Component {
         this.getRuas()
         this.getProps()
     }
+
+
 
     getProps = () => {
         // console.log(this.props)
@@ -75,7 +78,7 @@ class Editar extends Component {
             var urlHeroku = "https://back-jamapas2.herokuapp.com/"
             const data = await axios.get(urlHeroku + "gethere/cruzamentos", {
                 headers: {
-                    Authorization: "Bearer " + auth.isAuth()
+                    Authorization: "Bearer " + localStorage.getItem('auth')
                 }
             });
 
@@ -89,7 +92,7 @@ class Editar extends Component {
                 }
 
             })
-            console.log(uniq)
+            // console.log(uniq)
 
             var sample = { a: '1', b: '2', c: '3' }
             var summed = this.sum(sample);
@@ -137,10 +140,10 @@ class Editar extends Component {
                 var urlHeroku = "https://back-jamapas2.herokuapp.com/"
                 const data = await axios.get(urlHeroku + "gethere/cruzamento/" + this.state.totemAtual.idRua, {
                     headers: {
-                        Authorization: "Bearer " + auth.isAuth()
+                        Authorization: "Bearer " + localStorage.getItem('auth')
                     }
                 });
-                console.log(data)
+                // console.log(data)
 
                 if (data.data.data["rua_transversais"]) {
                     var string = data.data.data["rua_transversais"][0].pontosDeEncontro
@@ -152,7 +155,7 @@ class Editar extends Component {
 
                     for (let index = 0; index < arrayOfStrings.length; index++) {
 
-                        console.log(arrayOfStrings[index])
+                        // console.log(arrayOfStrings[index])
 
                     }
 
@@ -226,7 +229,7 @@ class Editar extends Component {
                     'ruaTransversal': this.state.totemAtual.ruaTransversal,
                     'latitude': this.state.totemAtual.latitude,
                     'longitude': this.state.totemAtual.longitude,
-                    'idRuaTransversal': this.state.ruaAtual.cruzamentoId,
+                    // 'idRuaTransversal': this.state.ruaAtual.cruzamentoId,
                 }
 
                 // console.log(requestBody)
@@ -238,7 +241,7 @@ class Editar extends Component {
                     method: 'PUT',
                     headers: {
                         'content-type': 'application/x-www-form-urlencoded',
-                        Authorization: "Bearer " + auth.isAuth()
+                        Authorization: "Bearer " + localStorage.getItem('auth')
                     },
                     params: requestBody,
                     // data: qs.stringify(data),
@@ -248,7 +251,7 @@ class Editar extends Component {
 
                 const data = await axios(options)
 
-                console.log(data)
+                // console.log(data)
 
                 ToastsStore.success("Totem alterado com sucesso", 2500, "text-white")
 
@@ -273,7 +276,7 @@ class Editar extends Component {
         if ((this.refs.nomeTotem !== '' || this.state.value !== '') || (this.refs.nomeTotem !== '' && this.state.value !== '')) {
             try {
                 var requestBody
-                console.log(this.state.ruaAtual)
+                // console.log(this.state.ruaAtual)
                 if (typeof this.state.ruaAtual === "object") {
                     requestBody = {
                         'nome': this.refs.nomeTotem.value,
@@ -283,7 +286,7 @@ class Editar extends Component {
                         'longitude': this.state.center.lng,
                         'idRuaTransversal': this.state.ruaAtual.cruzamentoId,
                     }
-                    console.log("Rua 1: " + this.state.ruaAtual)
+                    // console.log("Rua 1: " + this.state.ruaAtual)
                 } else {
                     requestBody = {
                         'nome': this.refs.nomeTotem.value,
@@ -292,12 +295,12 @@ class Editar extends Component {
                         'latitude': this.state.center.lat,
                         'longitude': this.state.center.lng
                     }
-                    console.log("Rua 2: " + this.state.ruaAtual)
+                    // console.log("Rua 2: " + this.state.ruaAtual)
                 }
 
 
 
-                console.log(requestBody)
+                // console.log(requestBody)
 
                 // var urlLocal = "http://localhost:3001/"
                 var urlHeroku = "https://back-jamapas2.herokuapp.com/"
@@ -306,7 +309,7 @@ class Editar extends Component {
                     method: 'POST',
                     headers: {
                         'content-type': 'application/x-www-form-urlencoded',
-                        Authorization: "Bearer " + auth.isAuth()
+                        Authorization: "Bearer " + localStorage.getItem('auth')
                     },
                     params: requestBody,
                     // data: qs.stringify(data),
@@ -339,7 +342,7 @@ class Editar extends Component {
         let reducedObjArr = [...counts].map(([key, value]) => {
             return { key, value }
         })
-        console.log(this.state.ruas.filter(this.bi))
+        // console.log(this.state.ruas.filter(this.bi))
 
         if (this.state.totemAtual === null) {
             return <option></option>
@@ -403,7 +406,7 @@ class Editar extends Component {
                                         value: val,
                                         totemAtual: item,
                                     }, () => {
-                                        console.log(this.state)
+                                        // console.log(this.state)
                                         this.getRuasTranversais()
                                     })
                                 }
@@ -430,7 +433,7 @@ class Editar extends Component {
                                     lng: parseFloat(string2[1]),
                                 }
 
-                                console.log(this.state.ruasTransversais[e.target.value])
+                                // console.log(this.state.ruasTransversais[e.target.value])
 
                                 this.setState({
                                     center: center,
@@ -473,7 +476,7 @@ class Editar extends Component {
                 </div>
             )
         }
-        console.log(this.state.totemAtual)
+        // console.log(this.state.totemAtual)
 
         return (
             <div className="details-container">
@@ -511,7 +514,7 @@ class Editar extends Component {
                                 lng: parseFloat(string2[1]),
                             }
 
-                            console.log(this.state.ruasTransversais[0])
+                            // console.log(this.state.ruasTransversais[0])
 
                             this.setState({
                                 center: center,

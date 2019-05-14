@@ -54,11 +54,12 @@ class Login extends Component {
 
             if (response.status === 200) {
                 // console.log(this)
-                auth.setToken(response.data.access_token)
-                auth.login(() => {
+                // auth.setToken()
+                localStorage.setItem('auth', response.data.access_token);
+                // auth.login(() => {
 
-                    this.props.history.push("/home")
-                })
+                this.props.history.push("/home")
+                // })
 
             }
             this.setState({

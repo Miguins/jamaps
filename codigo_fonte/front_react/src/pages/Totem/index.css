@@ -36,7 +36,7 @@
         justify-content: space-evenly;
     }
     .body-totem {
-        width: 60% !important;
+        width: 100% !important;
         height: 100vh;
         margin: 0 !important;
         display: flex;
